@@ -1,0 +1,46 @@
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="./angular-material/angular-material.css">
+  <link rel="stylesheet" href="./md-date-range-picker.css">
+</head>
+
+<body ng-app="demo.app" ng-cloak>
+  <div ng-controller="ctrl">
+    <md-button class="md-raised md-primary" ng-click="pick($event)">Pick A Date Range</md-button>
+    <h2>Selected Date Range: {{selectedRange.dateStart | date}} - {{selectedRange.dateEnd | date}}</h2>
+    <h2>Selected Date Template: {{selectedRange.selectedTemplate}}</h2>
+  </div>
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="./angular/angular.js"></script>
+  <script src="./angular-animate/angular-animate.js"></script>
+  <script src="./angular-aria/angular-aria.js"></script>
+  <script src="./angular-messages/angular-messages.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="./angular-material/angular-material.js"></script>
+
+  <!-- Angular Material Date Range Picker Library -->
+  <script src="./md-date-range-picker.js"></script>
+
+  <!-- Your application bootstrap  -->
+  <script type="text/javascript">    
+    /**
+     * You must include the dependency on 'ngMaterial' 
+     */
+    angular.module('demo.app', ['ngMaterial', 'ngMaterialDateRangePicker']).controller('ctrl',function($scope, $mdDateRangePicker){
+      $scope.selectedRange = {selectedTemplate:'TW',dateStart: null, dateEnd: null};
+      $scope.pick = function($event){
+        console.log('Button Fired!');
+        $mdDateRangePicker.show({targetEvent:$event, model:$scope.selectedRange} ).then(function(result){
+          if(result) $scope.selectedRange = result;
+        })
+      };
+    });
+  </script>
+
+</body>
+
+</html>

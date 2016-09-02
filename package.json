@@ -1,0 +1,29 @@
+{
+  "name": "md-date-range-picker",
+  "version": "0.0.0",
+  "description": "Angular Mterial Date Range Picker",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./server.js"
+  },
+  "keywords": [
+    "angular",
+    "material",
+    "date",
+    "range",
+    "picker"
+  ],
+  "author": "Roel Barreto <roel.mail73@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "express": "^4.14.0"
+  },
+  "dependencies": {
+    "angular": "^1.5.8",
+    "angular-animate": "^1.5.8",
+    "angular-aria": "^1.5.8",
+    "angular-material": "^1.1.0",
+    "angular-messages": "^1.5.8"
+  }
+}
