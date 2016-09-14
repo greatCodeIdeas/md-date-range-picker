@@ -1,0 +1,24 @@
+{
+  "name": "md-date-range-picker",
+  "description": "Angular Mterial Date Range Picker",
+  "main": ["./src/md-date-range-picker.js", "./src/md-date-range-picker.css"],
+  "authors": [
+    "Roel Barreto <greatcodeideas@gmail.com>"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "angular",
+    "material",
+    "date",
+    "range",
+    "picker"
+  ],
+  "homepage": "http://greatcodeideas.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

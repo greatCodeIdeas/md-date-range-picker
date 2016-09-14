@@ -28,13 +28,14 @@
     margin: 10px 0;
 }
 
-.md-date-range-picker__footer {
+.md-date-range-picker__templates {
     background: #EEE;
 }
 
 .md-date-range-picker__calendar-wrapper {
     padding: 0 0;
-    min-height: 408px;
+    width: 308px;
+    min-width: 308px;
 }
 
 .md-date-range-picker__week {
@@ -67,7 +68,7 @@
 }
 
 .md-date-range-picker__calendar__not-in-active-month {
-    color: #AAA;
+    color: rgba(0,0,0,0.2);
 }
 
 .md-date-range-picker__calendar .md-date-range-picker__calendar__grid:hover:not(.md-date-range-picker__calendar__selected) {
@@ -79,6 +80,9 @@
     background: rgb(16, 108, 200);
     color: #FFF;
     border-radius: 0;
+}
+.md-date-range-picker__calendar__not-in-active-month.md-date-range-picker__calendar__selected {
+    color: rgba(255,255,255,0.2);
 }
 
 .md-date-range-picker__calendar__today {

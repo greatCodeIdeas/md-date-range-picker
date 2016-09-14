@@ -11,7 +11,7 @@
   <div ng-controller="ctrl">
     <md-button class="md-raised md-primary" ng-click="pick($event)">Pick A Date Range</md-button>
     <h2>Selected Date Range: {{selectedRange.dateStart | date}} - {{selectedRange.dateEnd | date}}</h2>
-    <h2>Selected Date Template: {{selectedRange.selectedTemplate}}</h2>
+    <h2>Selected Date Template:{{selectedRange.selectedTemplateName}} - {{selectedRange.selectedTemplate}}</h2>
   </div>
   <!-- Angular Material requires Angular.js Libraries -->
   <script src="./angular/angular.js"></script>
@@ -31,7 +31,7 @@
      * You must include the dependency on 'ngMaterial' 
      */
     angular.module('demo.app', ['ngMaterial', 'ngMaterialDateRangePicker']).controller('ctrl',function($scope, $mdDateRangePicker){
-      $scope.selectedRange = {selectedTemplate:'TW',dateStart: null, dateEnd: null};
+      $scope.selectedRange = {selectedTemplate:'TW', selectedTemplateName: 'This Week',dateStart: null, dateEnd: null};
       $scope.pick = function($event){
         console.log('Button Fired!');
         $mdDateRangePicker.show({targetEvent:$event, model:$scope.selectedRange} ).then(function(result){

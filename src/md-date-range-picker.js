@@ -11,8 +11,10 @@
         var directive = {
             scope: {
                 selectedTemplate: '=',
+                selectedTemplateName: '=',
                 dateStart: '=',
-                dateEnd: '='
+                dateEnd: '=',
+                firstDayOfWeek: '=?',
             },
             templateUrl: './md-date-range-picker.html',
             controllerAs: 'ctrl',
@@ -35,11 +37,12 @@
                 'LM': 'Last Month',
                 'TY': 'This Year',
                 'LY': 'Last Year'
-            };
+            }, START_OF_WEEK = 1;
+        this.days = [];
         this.label = 'Date range picker';
         this.dates = [];
-        this.dateGrid = [];
-        this.firstDayOfWeek = 1; // Configurable Attribute
+        this.dates2 = [];
+        this.firstDayOfWeek = this.firstDayOfWeek || START_OF_WEEK; // Configurable Attribute
         this.numberOfMonthToDisplay = 2;
         this.today = new Date();
         this.dateStart = this.dateStart || TODAY;
@@ -47,8 +50,11 @@
         this.firstDayOfMonth = new Date(this.dateStart.getFullYear(), this.dateStart.getMonth(), 1);
         this.lastDayOfMonth = new Date(this.dateStart.getFullYear(), this.dateStart.getMonth() + 1, 0);
         this.activeDate = this.dateStart;
+        this.activeDate2 = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth() + 1, 1);
         this.activeMonth = this.activeDate.getMonth();
         this.activeYear = this.activeDate.getFullYear();
+        this.activeMonth2 = this.activeDate2.getMonth();
+        this.activeYear2 = this.activeDate2.getFullYear();
         this.months = [];
         this.years = [];
         this.selectedTemplate = this.selectedTemplate;
@@ -80,6 +86,7 @@
 
 
         function init() {
+            var mctr = 0;
             if (ctrl.selectedTemplate) {
                 switch (ctrl.selectedTemplate) {
                     case 'TD':
@@ -113,12 +120,21 @@
             } else {
                 ctrl.updateActiveDate();
             }
-
-
+            /**
+             * Generate Days of Week Names
+             * Fact: January 1st of 2017 is Sunday
+             */
+            var w = new Date(2017, 0, 1);
+            ctrl.days = [];
+            for (mctr = 0; mctr < 7; mctr++) {
+                //add ctrl.firstDayOfWeek to set the first Day of week e.g. 0 = Sunday, 1 = Monday 
+                w.setDate(mctr + 1 + ctrl.firstDayOfWeek);
+                ctrl.days.push({ id: mctr, name: $filter('date')(w, 'EEE') });
+            }
             /**
              * Generate Month Names, Might depend on localization
             */
-            var m = new Date(), mctr = 0;
+            var m = new Date();
             m.setDate(1);
             ctrl.months = [];
             for (mctr = 0; mctr < 12; mctr++) {
@@ -143,8 +159,8 @@
             var dates = [],
                 monthStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
                 monthEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0),
-                calendarStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1 - monthStartDate.getDay()),
-                calendarEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 7 - monthEndDate.getDay()),
+                calendarStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1 - (monthStartDate.getDay() - ctrl.firstDayOfWeek)),
+                calendarEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 7 - (monthEndDate.getDay() - ctrl.firstDayOfWeek)),
                 calendar = calendarStartDate;
             while (calendar < calendarEndDate) {
                 dates.push(calendar);
@@ -184,8 +200,10 @@
          * Events
          */
 
-        function inCurrentMonth(date) {
-            return date.getMonth() === ctrl.activeDate.getMonth();
+        function inCurrentMonth(date, isSecondMonth) {
+            return !isSecondMonth ?
+                date.getMonth() === ctrl.activeMonth :
+                date.getMonth() === ctrl.activeMonth2;
         }
 
         function handleClickDate($event, date) {
@@ -200,14 +218,25 @@
                 ctrl.dateEnd = date;
             }
             ctrl.selectedTemplate = false;
+            ctrl.selectedTemplateName = ctrl.selectedDateText();
         }
 
         function inSelectedDateRange(date) {
             return getDateDiff(ctrl.dateStart, date) >= 0 && 0 <= getDateDiff(date, ctrl.dateEnd);
         }
 
-        function updateActiveDate() {
-            var d = new Date(this.activeYear, this.activeMonth, 1);
+        function updateActiveDate(isSecondMonth) {
+            var d = new Date(this.activeYear, this.activeMonth, 1),
+                d2 = new Date(this.activeYear2, this.activeMonth2, 1);
+            if (isSecondMonth) {
+                d = new Date(this.activeYear2, this.activeMonth2 - 1, 1);
+                this.activeYear = d.getFullYear();
+                this.activeMonth = d.getMonth();
+            } else {
+                d2 = new Date(this.activeYear, this.activeMonth + 1, 1);
+                this.activeYear2 = d2.getFullYear();
+                this.activeMonth2 = d2.getMonth();
+            }
             ctrl.focusToDate(d);
         }
 
@@ -227,6 +256,7 @@
             ctrl.dateStart = d1;
             ctrl.dateEnd = d1;
             ctrl.selectedTemplate = 'TD';
+            ctrl.selectedTemplateName = ctrl.selectedDateText();
             ctrl.focusToDate(d);
         }
 
@@ -236,6 +266,7 @@
             ctrl.dateStart = d1;
             ctrl.dateEnd = d1;
             ctrl.selectedTemplate = 'YD';
+            ctrl.selectedTemplateName = ctrl.selectedDateText();
             ctrl.focusToDate(d);
         }
 
@@ -243,24 +274,26 @@
         function handleClickSelectThisWeek() {
             var p = TODAY,
                 d = new Date(p.getFullYear(), p.getMonth(), p.getDate()),
-                d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - d.getDay()),
-                d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (6 - d.getDay()));
+                d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() -  ctrl.firstDayOfWeek)),
+                d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (6 - d.getDay() + ctrl.firstDayOfWeek));
 
             ctrl.dateStart = d1;
             ctrl.dateEnd = d2;
             ctrl.selectedTemplate = 'TW';
+            ctrl.selectedTemplateName = ctrl.selectedDateText();
             ctrl.focusToDate(d);
         }
 
         function handleClickSelectLastWeek() {
             var p = TODAY,
                 d = new Date(p.getFullYear(), p.getMonth(), p.getDate() - 7),
-                d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - d.getDay()),
-                d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (6 - d.getDay()));
+                d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() -  ctrl.firstDayOfWeek)),
+                d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (6 - d.getDay() + ctrl.firstDayOfWeek));
 
             ctrl.dateStart = d1;
             ctrl.dateEnd = d2;
             ctrl.selectedTemplate = 'LW';
+            ctrl.selectedTemplateName = ctrl.selectedDateText();
             ctrl.focusToDate(d);
         }
 
@@ -273,6 +306,7 @@
             ctrl.dateStart = d1;
             ctrl.dateEnd = d2;
             ctrl.selectedTemplate = 'TM';
+            ctrl.selectedTemplateName = ctrl.selectedDateText();
             ctrl.focusToDate(d);
         }
 
@@ -285,6 +319,7 @@
             ctrl.dateStart = d1;
             ctrl.dateEnd = d2;
             ctrl.selectedTemplate = 'LM';
+            ctrl.selectedTemplateName = ctrl.selectedDateText();
             ctrl.focusToDate(d);
         }
 
@@ -296,6 +331,7 @@
             ctrl.dateStart = d1;
             ctrl.dateEnd = d2;
             ctrl.selectedTemplate = 'TY';
+            ctrl.selectedTemplateName = ctrl.selectedDateText();
             ctrl.focusToDate(d1);
         }
 
@@ -307,6 +343,7 @@
             ctrl.dateStart = d1;
             ctrl.dateEnd = d2;
             ctrl.selectedTemplate = 'LY';
+            ctrl.selectedTemplateName = ctrl.selectedDateText();
             ctrl.focusToDate(d1);
         }
 
@@ -325,15 +362,16 @@
         function selectedDateText() {
             if (!ctrl.selectedTemplate) {
                 if (getDateDiff(ctrl.dateStart, ctrl.dateEnd) === 0) {
-                    return $filter('date')(ctrl.dateStart, 'dd MMM' + (ctrl.dateStart.getFullYear() !== TODAY.getFullYear() ? ' yy' : ''));
+                    return $filter('date')(ctrl.dateStart, 'dd MMM' + (ctrl.dateStart.getFullYear() !== TODAY.getFullYear() ? ' yyyy' : ''));
                 } else {
                     return $filter('date')(
                         ctrl.dateStart,
-                        'dd' + (ctrl.dateStart.getMonth() !== ctrl.dateEnd.getMonth() ? ' MMM': '') + (ctrl.dateStart.getFullYear() !== TODAY.getFullYear() ? ' yy' : '')
+                        'dd' + (ctrl.dateStart.getMonth() !== ctrl.dateEnd.getMonth() ? ' MMM' : '') 
+                        + (ctrl.dateStart.getFullYear() !== TODAY.getFullYear() || ctrl.dateEnd.getFullYear() !== TODAY.getFullYear() ? ' yyyy' : '')
                     ) + ' - ' +
                         $filter('date')(
                             ctrl.dateEnd,
-                            'dd MMM' + (ctrl.dateStart.getFullYear() !== TODAY.getFullYear() ? ' yy' : '')
+                            'dd MMM yyyy'
                         );
                 }
             } else {
@@ -342,15 +380,21 @@
         }
 
         function focusToDate(d) {
+            var d2 = new Date(d.getFullYear(), d.getMonth() + 1, 1);
             ctrl.activeDate = d;
             ctrl.activeMonth = d.getMonth();
             ctrl.activeYear = d.getFullYear();
+
+            ctrl.activeDate2 = d2;
+            ctrl.activeMonth2 = d2.getMonth();
+            ctrl.activeYear2 = d2.getFullYear();
+
             ctrl.dates = fillDateGrid(d);
+            ctrl.dates2 = fillDateGrid(d2);
         }
     }
 
     function mdDateRangePickerLink(scope) {
-        console.info(scope)
     }
 
     mdDateRangePickerService.$inject = ['$q', '$mdDialog'];
@@ -363,12 +407,12 @@
             return $q(function (resolve, reject) {
                 $mdDialog.show({
                     locals: {
-                        mdDateRangePickerServiceModel: config.model
+                        mdDateRangePickerServiceModel: angular.copy(config.model)
                     },
                     controller: ['$scope', 'mdDateRangePickerServiceModel', function ($scope, mdDateRangePickerServiceModel) {
                         var vm = this;
-                        vm.model = mdDateRangePickerServiceModel;
-                        console.warn(vm.model)
+                        vm.model = mdDateRangePickerServiceModel || {};
+                        vm.model.selectedTemplateName = vm.model.selectedTemplateName || '';
                         vm.ok = function () {
                             $mdDialog.hide(vm.model);
                         }
@@ -379,9 +423,9 @@
                     controllerAs: 'vm',
                     template: ['<md-dialog aria-label="Date Range Picker">',
                         '<md-dialog-content>',
-                        '<md-date-range-picker date-start="vm.model.dateStart" date-end="vm.model.dateEnd" selected-template="vm.model.selectedTemplate"></md-date-range-picker>',
+                        '<md-date-range-picker date-start="vm.model.dateStart" date-end="vm.model.dateEnd" selected-template="vm.model.selectedTemplate" selected-template-name="vm.model.selectedTemplateName"></md-date-range-picker>',
                         '</md-dialog-content>',
-                        '<md-dialog-actions layout="row" layout-align="space-between center">',
+                        '<md-dialog-actions layout="row" layout-align="end center">',
                         '<md-button ng-click="vm.cancel()">Cancel</md-button>',
                         '<md-button class="md-raised md-primary" ng-click="vm.ok()">Ok</md-button>',
                         '</md-dialog-actions>',
