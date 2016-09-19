@@ -1,6 +1,6 @@
 <div class="md-date-range-picker md-whiteframe-1dp">
     <md-toolbar class="md-primary" layout="row" layout-align="start center">
-        <md-button class="md-icon-button" aria-hidden="true" ng-disabled="true">
+        <md-button aria-label="Date Range Picker" class="md-icon-button" aria-hidden="true" ng-disabled="true">
             <md-icon md-svg-icon="data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkZGRkZGIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik05IDExSDd2Mmgydi0yem00IDBoLTJ2Mmgydi0yem00IDBoLTJ2Mmgydi0yem0yLTdoLTFWMmgtMnYySDhWMkg2djJINWMtMS4xMSAwLTEuOTkuOS0xLjk5IDJMMyAyMGMwIDEuMS44OSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMlY2YzAtMS4xLS45LTItMi0yem0wIDE2SDVWOWgxNHYxMXoiLz4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KPC9zdmc+"></md-icon>
         </md-button>
         <span class="md-toolbar-tools">{{ctrl.selectedDateText()}}</span>
@@ -25,8 +25,8 @@
                             <md-icon style="transform: rotate(-180deg)" md-svg-src="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnPjxwb2x5Z29uIHBvaW50cz0iMTUuNCw3LjQgMTQsNiA4LDEyIDE0LDE4IDE1LjQsMTYuNiAxMC44LDEyICIvPjwvZz48L3N2Zz4="></md-icon>
                         </md-button>
                     </div>
-                    <div flex layout="column" aria-label="Next Month" layout-align="center center" class="hide show-gt-sm">
-                        <md-button ng-disabled="true" aria-hidden="true" class="md-icon-button">
+                    <div flex layout="column" layout-align="center center" class="hide show-gt-sm">
+                        <md-button aria-label="Next Month" ng-disabled="true" aria-hidden="true" class="md-icon-button">
                             <md-icon></md-icon>
                         </md-button>
                     </div>
@@ -71,7 +71,7 @@
                 </div>
             </div>
         </div>
-        <div class="md-date-range-picker__templates">
+        <div class="md-date-range-picker__templates" ng-if="ctrl.showTemplate">
             <div class="hide show-gt-sm" layout="row">
                 <div flex layout="column">
                     <md-button aria-label="Today" ng-class="ctrl.selectedTemplate === 'TD' ? 'md-primary md-raised' : ''" ng-click="ctrl.handleClickSelectToday()">Today</md-button>

@@ -1,7 +1,10 @@
 {
   "name": "md-date-range-picker",
   "description": "Angular Mterial Date Range Picker",
-  "main": ["./src/md-date-range-picker.js", "./src/md-date-range-picker.css"],
+  "main": [
+    "./dist/md-date-range-picker.min.js",
+    "./dist/md-date-range-picker.min.css"
+  ],
   "authors": [
     "Roel Barreto <greatcodeideas@gmail.com>"
   ],
