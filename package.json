@@ -1,7 +1,7 @@
 {
   "name": "md-date-range-picker",
-  "version": "0.1.0",
-  "description": "Angular Mterial Date Range Picker",
+  "version": "0.2.0",
+  "description": "Angular Material Date Range Picker",
   "main": "./dist/md-date-range-picker.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

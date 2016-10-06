@@ -9,7 +9,7 @@ md-date-range {
 }
 md-date-range-picker {
     display: block;
-    width: 664px;
+    max-width: 664px;
 }
 .md-date-range-picker [event-key] *{
     pointer-events: none;

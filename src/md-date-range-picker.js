@@ -43,18 +43,18 @@
                             scope.$apply();
                             break;
                         case 'date1':
-                            if(ctrl.handleClickDate(e, ctrl.dates[eventParam])){
+                            if (ctrl.handleClickDate(e, ctrl.dates[eventParam])) {
                                 scope.$apply();
                                 ctrl.triggerChange();
-                            }else{
+                            } else {
                                 scope.$apply();
                             }
                             break;
                         case 'date2':
-                            if(ctrl.handleClickDate(e, ctrl.dates2[eventParam])){
+                            if (ctrl.handleClickDate(e, ctrl.dates2[eventParam])) {
                                 scope.$apply();
                                 ctrl.triggerChange();
-                            }else{
+                            } else {
                                 scope.$apply();
                             }
                             break;
@@ -134,13 +134,13 @@
         this.firstDayOfWeek = this.firstDayOfWeek || START_OF_WEEK; // Configurable Attribute
         this.numberOfMonthToDisplay = 2;
         this.today = new Date();
-        this.dateStart = this.dateStart || new Date();
-        this.dateStart.setHours(0, 0, 0, 0);
-        this.dateEnd = this.dateEnd || new Date();
-        this.dateStart.setHours(23, 59, 59, 999);
-        this.firstDayOfMonth = new Date(this.dateStart.getFullYear(), this.dateStart.getMonth(), 1);
-        this.lastDayOfMonth = new Date(this.dateStart.getFullYear(), this.dateStart.getMonth() + 1, 0);
-        this.activeDate = this.dateStart;
+        this.dateStart = this.dateStart || null;
+        this.dateStart && this.dateStart.setHours(0, 0, 0, 0);
+        this.dateEnd = this.dateEnd || null;
+        this.dateEnd && this.dateStart.setHours(23, 59, 59, 999);
+        this.firstDayOfMonth = this.dateStart ? new Date(this.dateStart.getFullYear(), this.dateStart.getMonth(), 1) : Date(this.today.getFullYear(), this.today.getMonth(), 1);
+        this.lastDayOfMonth = this.dateStart ? new Date(this.dateStart.getFullYear(), this.dateStart.getMonth() + 1, 0) : Date(this.today.getFullYear(), this.today.getMonth() + 1, 0);
+        this.activeDate = this.dateStart || this.today;
         this.activeDate2 = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth() + 1, 1);
         this.activeMonth = this.activeDate.getMonth();
         this.activeYear = this.activeDate.getFullYear();
@@ -270,6 +270,7 @@
          * date1 > date2 return negative integer
          */
         function getDateDiff(date1, date2) {
+            if(!date1 || !date2) return;
             var _d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate()),
                 _d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
             return _d2 - _d1;
@@ -319,7 +320,9 @@
         }
 
         function inSelectedDateRange(date) {
-            return getDateDiff(ctrl.dateStart, date) >= 0 && 0 <= getDateDiff(date, ctrl.dateEnd);
+            return ctrl.dateStart &&  ctrl.dateEnd 
+                ? getDateDiff(ctrl.dateStart, date) >= 0 && 0 <= getDateDiff(date, ctrl.dateEnd) 
+                : false;
         }
 
         function updateActiveDate(isSecondMonth) {
@@ -457,7 +460,9 @@
         }
 
         function selectedDateText() {
-            if (!ctrl.selectedTemplate) {
+            if(!ctrl.dateStart || !ctrl.dateEnd){
+                return '';
+            }else if (!ctrl.selectedTemplate) {
                 if (getDateDiff(ctrl.dateStart, ctrl.dateEnd) === 0) {
                     return $filter('date')(ctrl.dateStart, 'dd MMM yyyy');
                 } else {
@@ -495,6 +500,7 @@
             scope: {
                 ngModel: '=ngModel',
                 showTemplate: '=',
+                autoConfirm: '=?',
                 placeholder: '@',
                 firstDayOfWeek: '@'
             },
@@ -506,13 +512,13 @@
                 '<md-menu-content class="md-custom-menu-content" style="max-height: none; height: auto; padding: 0;" width="4">',
                 '    <span style="text-align: left; padding: 12px 20px 0 20px; text-transform: uppercase" disabled>{{ctrl.selectedTemplateName}}</span>',
                 '    <md-date-range-picker show-template="true" first-day-of-week="ctrl.firstDayOfWeek" ',
-                '     md-on-select="ctrl.ok()" ',
+                '     md-on-select="ctrl.autoConfirm && ctrl.ok()" ',
                 '     date-start="ctrl.dateStart" ',
                 '     date-end="ctrl.dateEnd" ',
                 '     show-template="ctrl.showTemplate" ',
                 '     selected-template="ctrl.selectedTemplate" ',
                 '     selected-template-name="ctrl.selectedTemplateName"></md-date-range-picker>',
-                '<p layout="row" layout-align="end center">',
+                '<p ng-if="!ctrl.autoConfirm" layout="row" layout-align="end center">',
                 '<md-button ng-click="ctrl.cancel()">Cancel</md-button>',
                 '<md-button class="md-raised md-primary" ng-click="ctrl.ok()">Ok</md-button>',
                 '</p>',
@@ -525,9 +531,9 @@
                 /**
                  * Copy Model so that model will only update if dateEnd modified
                  */
-                $scope.$watch(function(){
-                    return  JSON.stringify(self.ngModel);
-                }, function(newval){
+                $scope.$watch(function () {
+                    return JSON.stringify(self.ngModel);
+                }, function (newval) {
                     self.selectedTemplateName = self.ngModel.selectedTemplateName;
                     self.selectedTemplate = self.ngModel.selectedTemplate;
                     self.dateStart = self.ngModel.dateStart;
@@ -547,7 +553,7 @@
                     self.ngModel.dateEnd.setHours(23, 59, 59, 999);
                     $mdMenu.hide();
                 }
-                self.cancel = function cancel(){
+                self.cancel = function cancel() {
                     $mdMenu.hide();
                 }
             }]

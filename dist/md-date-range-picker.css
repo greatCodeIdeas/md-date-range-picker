@@ -1,9 +1,19 @@
 /*
 * Name: md-date-range-picker
-* Version: 0.1.0
-* Build Date: 9/19/2016
+* Version: 0.2.0
+* Build Date: 10/6/2016
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
+md-date-range {
+    cursor: pointer;
+}
+md-date-range-picker {
+    display: block;
+    max-width: 664px;
+}
+.md-date-range-picker [event-key] *{
+    pointer-events: none;
+}
 .md-date-range-picker {
     position: relative;
     background: #FFF;
@@ -103,4 +113,8 @@
 .md-date-range-picker__calendar__end {
     border-top-right-radius: 50%;
     border-bottom-right-radius: 50%;
+}
+
+.md-date-range-picker__select {
+    z-index: 100;
 }
