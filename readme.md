@@ -9,52 +9,65 @@ A simple Angular Date range picker with material theme
 - install using bower
 - `bower install md-date-range-picker`
 
+## Demo
+
+- https://ipiz.herokuapp.com/md-date-range-picker-demo/index.html
+
 example:
 html
 ```html
+<body ng-app="demo.app" ng-cloak>
   <div ng-controller="ctrl">
-    <md-button 
-        class="md-raised md-primary" 
-        ng-click="pick($event, false)">
-        Pick A Date Range
-    </md-button>
-    <md-button 
-        class="md-raised md-primary"
-        ng-click="pick($event, true)">
-        Pick A Date Range With Template
-    </md-button>
-    <h2>Selected Date Range: 
-        {{selectedRange.dateStart | date}}
-         - 
-        {{selectedRange.dateEnd | date}}
-    </h2>
-    <h2>Selected Date Template:
-        {{selectedRange.selectedTemplateName}}
-         - 
-        {{selectedRange.selectedTemplate}}
-    </h2>
+    <h1>{{'2016-09-26T14:47:56Z' | date: 'medium'}}</h1>
+    <md-button class="md-raised md-primary" ng-click="pick($event, false)">Pick A Date Range</md-button>
+    <md-button class="md-raised md-primary" ng-click="pick($event, true)">Pick A Date Range With Template</md-button>
+    <md-button class="md-raised md-primary" ng-click="clear($event)">Clear Range</md-button>
+    <md-date-range ng-model="selectedRange" placeholder="Select Date Range"></md-date-range>
+    <h2>Selected Date Range: {{selectedRange.dateStart | date}} - {{selectedRange.dateEnd | date}}</h2>
+    <h2>Selected Date Template:{{selectedRange.selectedTemplateName}} - {{selectedRange.selectedTemplate}}</h2>
+    <md-date-range-picker
+      md-on-select="onSelect()"
+      date-start="selectedRange.dateStart"
+      date-end="selectedRange.dateEnd"
+      selected-template-name="selectedRange.selectedTemplateName"
+      selected-template="selectedRange.selectedTemplate"
+      show-template="true"
+    ></md-date-range-picker>
   </div>
+</body>
 ```
 js
 ```javascript
-angular
-    .module('demo.app', ['ngMaterial', 'ngMaterialDateRangePicker'])
-    .controller('ctrl',function($scope, $mdDateRangePicker){
-        $scope.selectedRange = {selectedTemplate:'TW', 
-                                selectedTemplateName: 'This Week',
-                                dateStart: null, 
-                                dateEnd: null, 
-                                showTemplate: false, 
-                                fullscreen: false};
-        $scope.pick = function($event, showTemplate){
+angular.module('demo.app', ['ngMaterial', 'ngMaterialDateRangePicker'])
+    .controller('ctrl', function($scope, $mdDateRangePicker) {
+        $scope.selectedRange = {
+            selectedTemplate: 'TW',
+            selectedTemplateName: 'This Week',
+            dateStart: null,
+            dateEnd: null,
+            showTemplate: false,
+            fullscreen: false
+        };
+        $scope.onSelect = function(scope) {
+            console.log($scope.selectedRange.selectedTemplateName);
+            return $scope.selectedRange.selectedTemplateName;
+        };
+        $scope.pick = function($event, showTemplate) {
             console.log('Button Fired!');
             $scope.selectedRange.showTemplate = showTemplate;
-            $mdDateRangePicker
-                .show({targetEvent:$event, model:$scope.selectedRange} )
-                .then(function(result){
-                    if(result) $scope.selectedRange = result;
-                });
+            $mdDateRangePicker.show({
+                targetEvent: $event,
+                model: $scope.selectedRange
+            }).then(function(result) {
+                if (result) $scope.selectedRange = result;
+            })
         };
+        $scope.clear = function() {
+            $scope.selectedRange.selectedTemplate = null;
+            $scope.selectedRange.selectedTemplateName = null;
+            $scope.selectedRange.dateStart = null;
+            $scope.selectedRange.dateEnd = null;
+        }
     });
 ```
 
