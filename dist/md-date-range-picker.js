@@ -1,7 +1,7 @@
 /*
 * Name: md-date-range-picker
-* Version: 0.2.0
-* Build Date: 10/6/2016
+* Version: 0.2.2
+* Build Date: 2/14/2017
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
 (function (window, angular) {
@@ -17,8 +17,8 @@
     function mdDateRangePickerDirective() {
         var directive = {
             scope: {
-                selectedTemplate: '=?',
-                selectedTemplateName: '=?',
+                selectedTemplate: '=',
+                selectedTemplateName: '=',
                 dateStart: '=',
                 dateEnd: '=',
                 firstDayOfWeek: '=?',
@@ -534,23 +534,29 @@
                 $scope.$watch(function () {
                     return JSON.stringify(self.ngModel);
                 }, function (newval) {
+                    if(self.ngModel){
+                        self.selectedTemplateName = self.ngModel.selectedTemplateName;
+                        self.selectedTemplate = self.ngModel.selectedTemplate;
+                        self.dateStart = self.ngModel.dateStart;
+                        self.dateEnd = self.ngModel.dateEnd;
+                    }
+                });
+                if(self.ngModel){
                     self.selectedTemplateName = self.ngModel.selectedTemplateName;
                     self.selectedTemplate = self.ngModel.selectedTemplate;
                     self.dateStart = self.ngModel.dateStart;
                     self.dateEnd = self.ngModel.dateEnd;
-                });
-                self.selectedTemplateName = self.ngModel.selectedTemplateName;
-                self.selectedTemplate = self.ngModel.selectedTemplate;
-                self.dateStart = self.ngModel.dateStart;
-                self.dateEnd = self.ngModel.dateEnd;
-                self.firstDayOfWeek = self.firstDayOfWeek || 1;
+                    self.firstDayOfWeek = self.firstDayOfWeek || 1;
+                }
                 self.ok = function ok() {
-                    self.ngModel.selectedTemplateName = self.selectedTemplateName;
-                    self.ngModel.selectedTemplate = self.selectedTemplate;
-                    self.ngModel.dateStart = self.dateStart;
-                    self.ngModel.dateEnd = self.dateEnd;
-                    self.ngModel.dateStart.setHours(0, 0, 0, 0);
-                    self.ngModel.dateEnd.setHours(23, 59, 59, 999);
+                    if(self.ngModel){
+                        self.ngModel.selectedTemplateName = self.selectedTemplateName;
+                        self.ngModel.selectedTemplate = self.selectedTemplate;
+                        self.ngModel.dateStart = self.dateStart;
+                        self.ngModel.dateEnd = self.dateEnd;
+                        self.ngModel.dateStart.setHours(0, 0, 0, 0);
+                        self.ngModel.dateEnd.setHours(23, 59, 59, 999);
+                    }
                     $mdMenu.hide();
                 }
                 self.cancel = function cancel() {
