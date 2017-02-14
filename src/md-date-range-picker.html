@@ -8,11 +8,11 @@
                             <md-icon md-svg-src="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnPjxwb2x5Z29uIHBvaW50cz0iMTUuNCw3LjQgMTQsNiA4LDEyIDE0LDE4IDE1LjQsMTYuNiAxMC44LDEyICIvPjwvZz48L3N2Zz4="></md-icon>
                         </span>
                     </div>
-                    <md-select md-container-class="md-date-range-picker__select" md-on-close="ctrl.updateActiveDate()" ng-model="ctrl.activeMonth" placeholder="Month" class="md-no-underline">
-                        <md-option ng-value="::month.id" ng-repeat="month in ctrl.months" ng-bind="::month.name"></md-option>
+                    <md-select md-container-class="md-date-range-picker__select" md-on-close="updateActiveDate()" ng-model="activeMonth" placeholder="Month" class="md-no-underline">
+                        <md-option ng-value="::month.id" ng-repeat="month in months" ng-bind="::month.name"></md-option>
                     </md-select>
-                    <md-select md-container-class="md-date-range-picker__select" md-on-close="ctrl.updateActiveDate()" ng-model="ctrl.activeYear" placeholder="Year" class="md-no-underline">
-                        <md-option ng-value="::year.id" ng-repeat="year in ctrl.years" ng-bind="::year.name"></md-option>
+                    <md-select md-container-class="md-date-range-picker__select" md-on-close="updateActiveDate()" ng-model="activeYear" placeholder="Year" class="md-no-underline">
+                        <md-option ng-value="::year.id" ng-repeat="year in years" ng-bind="::year.name"></md-option>
                     </md-select>
                     <div flex layout="column" layout-align="center center" class="hide-gt-sm">
                         <span aria-label="Next Month" class="md-icon-button md-button" event-key="next">
@@ -26,10 +26,10 @@
                     </div>
                 </div>
                 <div class="md-date-range-picker__week" style="font-size: 0;">
-                    <span class="md-date-range-picker__calendar__grid" ng-repeat="day in ctrl.days">{{::day.name}}</span>
+                    <span class="md-date-range-picker__calendar__grid" ng-repeat="day in days">{{::day.name}}</span>
                 </div>
                 <div class="md-date-range-picker__calendar">
-                    <span ng-repeat="date in ctrl.dates" class="md-date-range-picker__calendar__grid" ng-class="{'md-date-range-picker__calendar__selected':ctrl.inSelectedDateRange(date), 'md-date-range-picker__calendar__start':ctrl.isSelectedStartDate(date), 'md-date-range-picker__calendar__end':ctrl.isSelectedEndDate(date), 'md-date-range-picker__calendar__not-in-active-month': !ctrl.inCurrentMonth(date), 'md-date-range-picker__calendar__today' : ctrl.isToday(date) }"
+                    <span ng-repeat="date in dates" class="md-date-range-picker__calendar__grid" ng-class="{'md-date-range-picker__calendar__selected':inSelectedDateRange(date), 'md-date-range-picker__calendar__start':isSelectedStartDate(date), 'md-date-range-picker__calendar__end':isSelectedEndDate(date), 'md-date-range-picker__calendar__not-in-active-month': !inCurrentMonth(date), 'md-date-range-picker__calendar__today' : isToday(date) }"
                          event-key="date1" event-param="{{$index}}">
                         <span class="md-date-range-picker__calendar__selection" ng-bind={{::date.getDate()}}></span>
                     </span>
@@ -42,11 +42,11 @@
                             <md-icon md-svg-src="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnPjxwb2x5Z29uIHBvaW50cz0iMTUuNCw3LjQgMTQsNiA4LDEyIDE0LDE4IDE1LjQsMTYuNiAxMC44LDEyICIvPjwvZz48L3N2Zz4="></md-icon>
                         </span>
                     </div>
-                    <md-select md-container-class="md-date-range-picker__select" md-on-close="ctrl.updateActiveDate(true)" ng-model="ctrl.activeMonth2" placeholder="Month" class="md-no-underline">
-                        <md-option ng-value="::month.id" ng-repeat="month in ctrl.months" ng-bind="::month.name"></md-option>
+                    <md-select md-container-class="md-date-range-picker__select" md-on-close="updateActiveDate(true)" ng-model="activeMonth2" placeholder="Month" class="md-no-underline">
+                        <md-option ng-value="::month.id" ng-repeat="month in months" ng-bind="::month.name"></md-option>
                     </md-select>
-                    <md-select md-container-class="md-date-range-picker__select" md-on-close="ctrl.updateActiveDate(true)" ng-model="ctrl.activeYear2" placeholder="Year" class="md-no-underline">
-                        <md-option ng-value="::year.id" ng-repeat="year in ctrl.years" ng-bind="::year.name"></md-option>
+                    <md-select md-container-class="md-date-range-picker__select" md-on-close="updateActiveDate(true)" ng-model="activeYear2" placeholder="Year" class="md-no-underline">
+                        <md-option ng-value="::year.id" ng-repeat="year in years" ng-bind="::year.name"></md-option>
                     </md-select>
                     <div flex layout="column" layout-align="center center">
                         <span aria-label="Next Month" class="md-icon-button md-button" event-key="next">
@@ -55,48 +55,48 @@
                     </div>
                 </div>
                 <div class="md-date-range-picker__week" style="font-size: 0;">
-                    <span class="md-date-range-picker__calendar__grid" ng-repeat="day in ctrl.days">{{::day.name}}</span>
+                    <span class="md-date-range-picker__calendar__grid" ng-repeat="day in days">{{::day.name}}</span>
                 </div>
                 <div class="md-date-range-picker__calendar">
-                    <span ng-repeat="date in ctrl.dates2" class="md-date-range-picker__calendar__grid" ng-class="{'md-date-range-picker__calendar__selected':ctrl.inSelectedDateRange(date), 'md-date-range-picker__calendar__start':ctrl.isSelectedStartDate(date), 'md-date-range-picker__calendar__end':ctrl.isSelectedEndDate(date), 'md-date-range-picker__calendar__not-in-active-month': !ctrl.inCurrentMonth(date, true), 'md-date-range-picker__calendar__today' : ctrl.isToday(date) }"
+                    <span ng-repeat="date in dates2" class="md-date-range-picker__calendar__grid" ng-class="{'md-date-range-picker__calendar__selected':inSelectedDateRange(date), 'md-date-range-picker__calendar__start':isSelectedStartDate(date), 'md-date-range-picker__calendar__end':isSelectedEndDate(date), 'md-date-range-picker__calendar__not-in-active-month': !inCurrentMonth(date, true), 'md-date-range-picker__calendar__today' : isToday(date) }"
                         event-key="date2" event-param="{{$index}}">
                         <span class="md-date-range-picker__calendar__selection" ng-bind={{::date.getDate()}}></span>
                     </span>
                 </div>
             </div>  
         </div>
-        <div class="md-date-range-picker__templates" ng-if="ctrl.showTemplate">
+        <div class="md-date-range-picker__templates" ng-if="showTemplate">
             <div class="hide show-gt-sm" layout="row">
                 <div flex layout="column">
-                    <span class="md-button" aria-label="Today" ng-class="ctrl.selectedTemplate === 'TD' ? 'md-primary md-raised' : ''" event-key="TD">Today</span>
-                    <span class="md-button" aria-label="Yesterday" ng-class="ctrl.selectedTemplate === 'YD' ? 'md-primary md-raised' : ''" event-key="YD">Yesterday</span>
+                    <span class="md-button" aria-label="Today" ng-class="selectedTemplate === 'TD' ? 'md-primary md-raised' : ''" event-key="TD">Today</span>
+                    <span class="md-button" aria-label="Yesterday" ng-class="selectedTemplate === 'YD' ? 'md-primary md-raised' : ''" event-key="YD">Yesterday</span>
                 </div>
                 <div flex layout="column">
-                    <span class="md-button" aria-label="This Week" ng-class="ctrl.selectedTemplate === 'TW' ? 'md-primary md-raised' : ''" event-key="TW">This Week</span>
-                    <span class="md-button" aria-label="Last Week" ng-class="ctrl.selectedTemplate === 'LW' ? 'md-primary md-raised' : ''" event-key="LW">Last Week</span>
+                    <span class="md-button" aria-label="This Week" ng-class="selectedTemplate === 'TW' ? 'md-primary md-raised' : ''" event-key="TW">This Week</span>
+                    <span class="md-button" aria-label="Last Week" ng-class="selectedTemplate === 'LW' ? 'md-primary md-raised' : ''" event-key="LW">Last Week</span>
                 </div>
                 <div flex layout="column">
-                    <span class="md-button" aria-label="This Month" ng-class="ctrl.selectedTemplate === 'TM' ? 'md-primary md-raised' : ''" event-key="TM">This Month</span>
-                    <span class="md-button" aria-label="Last Month" ng-class="ctrl.selectedTemplate === 'LM' ? 'md-primary md-raised' : ''" event-key="LM">Last Month</span>
+                    <span class="md-button" aria-label="This Month" ng-class="selectedTemplate === 'TM' ? 'md-primary md-raised' : ''" event-key="TM">This Month</span>
+                    <span class="md-button" aria-label="Last Month" ng-class="selectedTemplate === 'LM' ? 'md-primary md-raised' : ''" event-key="LM">Last Month</span>
                 </div>
                 <div flex layout="column">
-                    <span class="md-button" aria-label="This Year" ng-class="ctrl.selectedTemplate === 'TY' ? 'md-primary md-raised' : ''" event-key="TY">This Year</span>
-                    <span class="md-button" aria-label="Last Year" ng-class="ctrl.selectedTemplate === 'LY' ? 'md-primary md-raised' : ''" event-key="LY">Last Year</span>
+                    <span class="md-button" aria-label="This Year" ng-class="selectedTemplate === 'TY' ? 'md-primary md-raised' : ''" event-key="TY">This Year</span>
+                    <span class="md-button" aria-label="Last Year" ng-class="selectedTemplate === 'LY' ? 'md-primary md-raised' : ''" event-key="LY">Last Year</span>
                 </div>
             </div>
             <div class="hide-gt-sm" layout="column" layout-padding>
                 <md-input-container>
                     <label>Date Range Template</label>
-                    <md-select md-container-class="md-date-range-picker__select" class="md-block" placeholder="Custom Date Range" ng-model="ctrl.selectedTemplate">
+                    <md-select md-container-class="md-date-range-picker__select" class="md-block" placeholder="Custom Date Range" ng-model="selectedTemplate">
                         <md-option value=""></md-option>
-                        <md-option aria-label="Today" value="TD" ng-click="ctrl.handleClickSelectToday()">Today</md-option>
-                        <md-option aria-label="Yesterday" value="YD" ng-click="ctrl.handleClickSelectYesterday()">Yesterday</md-option>
-                        <md-option aria-label="This Week" value="TW" ng-click="ctrl.handleClickSelectThisWeek()">This Week</md-option>
-                        <md-option aria-label="Last Week" value="LW" ng-click="ctrl.handleClickSelectLastWeek()">Last Week</md-option>
-                        <md-option aria-label="This Month" value="TM" ng-click="ctrl.handleClickSelectThisMonth()">This Month</md-option>
-                        <md-option aria-label="Last Month" value="LM" ng-click="ctrl.handleClickSelectLastMonth()">Last Month</md-option>
-                        <md-option aria-label="This Year" value="TY" ng-click="ctrl.handleClickSelectThisYear()">This Year</md-option>
-                        <md-option aria-label="Last Year" value="LY" ng-click="ctrl.handleClickSelectLastYear()">Last Year</md-option>
+                        <md-option aria-label="Today" value="TD" ng-click="handleClickSelectToday()">Today</md-option>
+                        <md-option aria-label="Yesterday" value="YD" ng-click="handleClickSelectYesterday()">Yesterday</md-option>
+                        <md-option aria-label="This Week" value="TW" ng-click="handleClickSelectThisWeek()">This Week</md-option>
+                        <md-option aria-label="Last Week" value="LW" ng-click="handleClickSelectLastWeek()">Last Week</md-option>
+                        <md-option aria-label="This Month" value="TM" ng-click="handleClickSelectThisMonth()">This Month</md-option>
+                        <md-option aria-label="Last Month" value="LM" ng-click="handleClickSelectLastMonth()">Last Month</md-option>
+                        <md-option aria-label="This Year" value="TY" ng-click="handleClickSelectThisYear()">This Year</md-option>
+                        <md-option aria-label="Last Year" value="LY" ng-click="handleClickSelectLastYear()">Last Year</md-option>
                     </md-select>
                 </md-input-container>
             </div>
