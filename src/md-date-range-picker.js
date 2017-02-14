@@ -18,8 +18,8 @@
     function mdDateRangePickerDirective() {
         var directive = {
             scope: {
-                selectedTemplate: '=?',
-                selectedTemplateName: '=?',
+                selectedTemplate: '=',
+                selectedTemplateName: '=',
                 dateStart: '=?',
                 dateEnd: '=?',
                 firstDayOfWeek: '=?',
@@ -496,7 +496,6 @@
             scope: {
                 ngModel: '=ngModel',
                 showTemplate: '=',
-                autoConfirm: '=?',
                 placeholder: '@',
                 firstDayOfWeek: '@'
             },
@@ -505,54 +504,22 @@
                 '  <span>{{ngModel.selectedTemplateName || placeholder}}</span>',
                 '  <span class="md-select-icon" aria-hidden="true"></span>',
                 '</span>',
-                '<md-menu-content class="md-custom-menu-content" style="max-height: none; height: auto; padding: 0;" width="4">',
-                '    <span style="text-align: left; padding: 12px 20px 0 20px; text-transform: uppercase" disabled>{{selectedTemplateName}}</span>',
+                '<md-menu-content class="md-custom-menu-content" style="max-height: none!important; height: auto!important; padding: 0!important;">',
+                '    <span style="text-align: left; padding: 12px 20px 0 20px; text-transform: uppercase" disabled>{{ngModel.selectedTemplateName}}</span>',
                 '    <md-date-range-picker show-template="true" first-day-of-week="firstDayOfWeek" ',
                 '     md-on-select="autoConfirm && ok()" ',
-                '     date-start="dateStart" ',
-                '     date-end="dateEnd" ',
-                '     show-template="showTemplate" ',
-                '     selected-template="selectedTemplate" ',
-                '     selected-template-name="selectedTemplateName"></md-date-range-picker>',
+                '     date-start="ngModel.dateStart" ',
+                '     date-end="ngModel.dateEnd" ',
+                '     show-template="ngModel.showTemplate" ',
+                '     selected-template="ngModel.selectedTemplate" ',
+                '     selected-template-name="ngModel.selectedTemplateName"></md-date-range-picker>',
                 '<p ng-if="!autoConfirm" layout="row" layout-align="end center">',
-                '<md-button ng-click="cancel()">Cancel</md-button>',
                 '<md-button class="md-raised md-primary" ng-click="ok()">Ok</md-button>',
                 '</p>',
                 '</md-menu-content>',
                 '</md-menu>'].join(''),
             controller: ['$scope', '$mdMenu', function ($scope, $mdMenu) {
-                /**
-                 * Copy Model so that model will only update if dateEnd modified
-                 */
-                $scope.$watch(function () {
-                    return JSON.stringify($scope.ngModel);
-                }, function (newval) {
-                    if($scope.ngModel){
-                        $scope.selectedTemplateName = $scope.ngModel.selectedTemplateName;
-                        $scope.selectedTemplate = $scope.ngModel.selectedTemplate;
-                        $scope.dateStart = $scope.ngModel.dateStart;
-                        $scope.dateEnd = $scope.ngModel.dateEnd;
-                    }
-                });
-                if($scope.ngModel){
-                    $scope.selectedTemplateName = $scope.ngModel.selectedTemplateName;
-                    $scope.selectedTemplate = $scope.ngModel.selectedTemplate;
-                    $scope.dateStart = $scope.ngModel.dateStart;
-                    $scope.dateEnd = $scope.ngModel.dateEnd;
-                    $scope.firstDayOfWeek = $scope.firstDayOfWeek || 1;
-                }
                 $scope.ok = function ok() {
-                    if($scope.ngModel){
-                        $scope.ngModel.selectedTemplateName = $scope.selectedTemplateName;
-                        $scope.ngModel.selectedTemplate = $scope.selectedTemplate;
-                        $scope.ngModel.dateStart = $scope.dateStart;
-                        $scope.ngModel.dateEnd = $scope.dateEnd;
-                        $scope.ngModel.dateStart.setHours(0, 0, 0, 0);
-                        $scope.ngModel.dateEnd.setHours(23, 59, 59, 999);
-                    }
-                    $mdMenu.hide();
-                }
-                $scope.cancel = function cancel() {
                     $mdMenu.hide();
                 }
             }]
