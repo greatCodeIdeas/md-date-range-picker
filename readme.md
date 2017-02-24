@@ -32,6 +32,7 @@ html
       selected-template-name="selectedRange.selectedTemplateName"
       selected-template="selectedRange.selectedTemplate"
       show-template="true"
+      first-day-of-week="0"
     ></md-date-range-picker>
   </div>
 </body>
