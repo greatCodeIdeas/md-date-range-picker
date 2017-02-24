@@ -44,7 +44,7 @@
      * You must include the dependency on 'ngMaterial' 
      */
     angular.module('demo.app', ['ngMaterial', 'ngMaterialDateRangePicker']).controller('ctrl',function($scope, $mdDateRangePicker){
-      $scope.selectedRange = {selectedTemplate:'TW', selectedTemplateName: 'This Week',dateStart: null, dateEnd: null, showTemplate: false, fullscreen: false};
+      $scope.selectedRange = {selectedTemplate:'TW', selectedTemplateName: 'This Week',dateStart: null, dateEnd: null, showTemplate: false, fullscreen: false, firstDayOfWeek: 0};
       $scope.onSelect = function(scope){ console.log($scope.selectedRange.selectedTemplateName); return $scope.selectedRange.selectedTemplateName; };
       $scope.pick = function($event, showTemplate){
         console.log('Button Fired!');

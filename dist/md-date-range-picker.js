@@ -1,7 +1,7 @@
 /*
 * Name: md-date-range-picker
-* Version: 0.3.2
-* Build Date: 2/24/2017
+* Version: 0.3.3
+* Build Date: 2/25/2017
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
 (function (window, angular) {
@@ -581,6 +581,7 @@
                         'show-template="model.showTemplate" ',
                         'selected-template="model.selectedTemplate" ',
                         'selected-template-name="model.selectedTemplateName"',
+                        'first-day-of-week="firstDayOfWeek || model.firstDayOfWeek"',
                         '>',
                         '</md-date-range-picker>',
                         '</md-dialog-content>',

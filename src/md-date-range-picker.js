@@ -581,6 +581,7 @@
                         'show-template="model.showTemplate" ',
                         'selected-template="model.selectedTemplate" ',
                         'selected-template-name="model.selectedTemplateName"',
+                        'first-day-of-week="firstDayOfWeek || model.firstDayOfWeek"',
                         '>',
                         '</md-date-range-picker>',
                         '</md-dialog-content>',
