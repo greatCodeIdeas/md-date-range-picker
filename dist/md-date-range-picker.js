@@ -1,7 +1,7 @@
 /*
 * Name: md-date-range-picker
-* Version: 0.3.0
-* Build Date: 2/14/2017
+* Version: 0.3.2
+* Build Date: 2/24/2017
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
 (function (window, angular) {
@@ -130,7 +130,6 @@
         $scope.label = 'Date range picker';
         $scope.dates = [];
         $scope.dates2 = [];
-        $scope.firstDayOfWeek = $scope.firstDayOfWeek || START_OF_WEEK; // Configurable Attribute
         $scope.numberOfMonthToDisplay = 2;
         $scope.today = new Date();
         $scope.dateStart && $scope.dateStart.setHours(0, 0, 0, 0);
@@ -202,14 +201,26 @@
                     default:
                         $scope.selectedTemplate = '';
                         $scope.selectedTemplateName = $scope.selectedDateText();
-                        $scope.updateActiveDate();
                         break;
                 }
+                $scope.updateActiveDate();
             } else {
                 $scope.selectedTemplate = '';
                 $scope.selectedTemplateName = $scope.selectedDateText();
                 $scope.updateActiveDate();
             }
+
+            $scope.$watch('selectedTemplate', function (next, prev) {
+                if (next !== prev && $scope.dateStart && !$scope.inCurrentMonth($scope.dateStart) && !$scope.inCurrentMonth($scope.dateStart, true)) {
+                    $scope.focusToDate($scope.dateStart);
+                }
+            });
+            $scope.$watch('dateStart', function (next, prev) {
+                if (next !== prev && $scope.dateStart && !$scope.inCurrentMonth($scope.dateStart) && !$scope.inCurrentMonth($scope.dateStart, true)) {
+                    $scope.focusToDate($scope.dateStart);
+                }
+            });
+
             /**
              * Generate Days of Week Names
              * Fact: January 1st of 2017 is Sunday
@@ -217,8 +228,8 @@
             var w = new Date(2017, 0, 1);
             $scope.days = [];
             for (mctr = 0; mctr < 7; mctr++) {
-                //add $scope.firstDayOfWeek to set the first Day of week e.g. 0 = Sunday, 1 = Monday 
-                w.setDate(mctr + 1 + $scope.firstDayOfWeek);
+                //add $scope.firstDayOfWeek to set the first Day of week e.g. -1 = Sunday, 0 = Monday 
+                w.setDate(mctr + 1 + getFirstDayOfWeek());
                 $scope.days.push({ id: mctr, name: $filter('date')(w, 'EEE') });
             }
             /**
@@ -241,6 +252,12 @@
             }
         }
 
+        function getFirstDayOfWeek() {
+            if ([undefined, null, '', NaN].indexOf($scope.firstDayOfWeek) !== -1) {
+                return START_OF_WEEK;
+            }
+            return $scope.firstDayOfWeek;
+        }
         /**
          * Fill the Calendar Dates
          */
@@ -249,8 +266,8 @@
             var dates = [],
                 monthStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
                 monthEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0),
-                calendarStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1 - (monthStartDate.getDay() - $scope.firstDayOfWeek)),
-                calendarEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 7 - (monthEndDate.getDay() - $scope.firstDayOfWeek)),
+                calendarStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1 - (monthStartDate.getDay() - getFirstDayOfWeek())),
+                calendarEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 7 - (monthEndDate.getDay() - getFirstDayOfWeek())),
                 calendar = calendarStartDate;
             while (calendar < calendarEndDate) {
                 dates.push(calendar);
@@ -275,8 +292,8 @@
         /**
          * return Day Name in a week
          */
-        function getDayName(day, firstDayOfWeek) {
-            var weekday = new Array(7), div = firstDayOfWeek || 0;
+        function getDayName(day) {
+            var weekday = new Array(7), div = getFirstDayOfWeek();
             weekday[0] = "Sun";
             weekday[1] = "Mon";
             weekday[2] = "Tue";
@@ -353,7 +370,7 @@
             $scope.dateEnd = d1;
             $scope.selectedTemplate = 'TD';
             $scope.selectedTemplateName = $scope.selectedDateText();
-            $scope.focusToDate(d);
+            //$scope.focusToDate(d);
         }
 
         function handleClickSelectYesterday() {
@@ -363,34 +380,34 @@
             $scope.dateEnd = d1;
             $scope.selectedTemplate = 'YD';
             $scope.selectedTemplateName = $scope.selectedDateText();
-            $scope.focusToDate(d);
+            //$scope.focusToDate(d);
         }
 
 
         function handleClickSelectThisWeek() {
             var p = new Date(),
                 d = new Date(p.getFullYear(), p.getMonth(), p.getDate()),
-                d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() - $scope.firstDayOfWeek)),
-                d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (6 - d.getDay() + $scope.firstDayOfWeek));
+                d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() - getFirstDayOfWeek())),
+                d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (6 - d.getDay() + getFirstDayOfWeek()));
 
             $scope.dateStart = d1;
             $scope.dateEnd = d2;
             $scope.selectedTemplate = 'TW';
             $scope.selectedTemplateName = $scope.selectedDateText();
-            $scope.focusToDate(d);
+            //$scope.focusToDate(d);
         }
 
         function handleClickSelectLastWeek() {
             var p = new Date(),
                 d = new Date(p.getFullYear(), p.getMonth(), p.getDate() - 7),
-                d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() - $scope.firstDayOfWeek)),
-                d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (6 - d.getDay() + $scope.firstDayOfWeek));
+                d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() - getFirstDayOfWeek())),
+                d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (6 - d.getDay() + getFirstDayOfWeek()));
 
             $scope.dateStart = d1;
             $scope.dateEnd = d2;
             $scope.selectedTemplate = 'LW';
             $scope.selectedTemplateName = $scope.selectedDateText();
-            $scope.focusToDate(d);
+            //$scope.focusToDate(d);
         }
 
 
@@ -403,7 +420,7 @@
             $scope.dateEnd = d2;
             $scope.selectedTemplate = 'TM';
             $scope.selectedTemplateName = $scope.selectedDateText();
-            $scope.focusToDate(d);
+            //$scope.focusToDate(d);
         }
 
         function handleClickSelectLastMonth() {
@@ -416,7 +433,7 @@
             $scope.dateEnd = d2;
             $scope.selectedTemplate = 'LM';
             $scope.selectedTemplateName = $scope.selectedDateText();
-            $scope.focusToDate(d);
+            //$scope.focusToDate(d);
         }
 
         function handleClickSelectThisYear() {
@@ -428,7 +445,7 @@
             $scope.dateEnd = d2;
             $scope.selectedTemplate = 'TY';
             $scope.selectedTemplateName = $scope.selectedDateText();
-            $scope.focusToDate(d1);
+            //$scope.focusToDate(d1);
         }
 
         function handleClickSelectLastYear() {
@@ -440,7 +457,7 @@
             $scope.dateEnd = d2;
             $scope.selectedTemplate = 'LY';
             $scope.selectedTemplateName = $scope.selectedDateText();
-            $scope.focusToDate(d1);
+            //$scope.focusToDate(d1);
         }
 
         function isSelectedStartDate(date) {
