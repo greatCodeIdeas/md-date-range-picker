@@ -24,7 +24,8 @@
                 dateEnd: '=?',
                 firstDayOfWeek: '=?',
                 showTemplate: '=?',
-                mdOnSelect: '&?'
+                mdOnSelect: '&?',
+                localizationMap:'=?'
             },
             templateUrl: './md-date-range-picker.html',
             controller: 'mdDateRangePickerCtrl',
@@ -168,8 +169,10 @@
         $scope.handleClickSelectThisYear = handleClickSelectThisYear;
         $scope.handleClickSelectLastYear = handleClickSelectLastYear;
 
+        $scope.getLocalizationVal = getLocalizationVal;
+       
         init();
-
+       
         function init() {
             var mctr = 0;
             if ($scope.selectedTemplate) {
@@ -230,7 +233,7 @@
             for (mctr = 0; mctr < 7; mctr++) {
                 //add $scope.firstDayOfWeek to set the first Day of week e.g. -1 = Sunday, 0 = Monday 
                 w.setDate(mctr + 1 + getFirstDayOfWeek());
-                $scope.days.push({ id: mctr, name: $filter('date')(w, 'EEE') });
+                $scope.days.push({ id: mctr, name: getLocalizationVal($filter('date')(w, 'EEE')) });
             }
             /**
              * Generate Month Names, Might depend on localization
@@ -240,7 +243,7 @@
             $scope.months = [];
             for (mctr = 0; mctr < 12; mctr++) {
                 m.setMonth(mctr);
-                $scope.months.push({ id: mctr, name: $filter('date')(m, 'MMMM') });
+                $scope.months.push({ id: mctr, name: getLocalizationVal($filter('date')(m, 'MMMM')) });
             }
             /**
              * Generate Year Selection
@@ -248,8 +251,19 @@
             var y = $scope.activeYear, yctr = 0;
             $scope.years = [];
             for (yctr = y - 10; yctr < y + 10; yctr++) {
-                $scope.years.push({ id: yctr, name: yctr })
+                $scope.years.push({ id: yctr, name: getLocalizationVal(yctr) })
             }
+        }
+
+            
+        function getLocalizationVal(val){
+            var ret = null;
+              if($scope.localizationMap != null && $scope.localizationMap[val] != null){
+                  ret = $scope.localizationMap[val];  
+              }else{
+                  ret = val;
+              }  
+              return ret;
         }
 
         function getFirstDayOfWeek() {

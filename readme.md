@@ -33,6 +33,7 @@ html
       selected-template="selectedRange.selectedTemplate"
       show-template="true"
       first-day-of-week="0"
+      localization-map="mdLocalizationMap"
     ></md-date-range-picker>
   </div>
 </body>
@@ -41,6 +42,10 @@ js
 ```javascript
 angular.module('demo.app', ['ngMaterial', 'ngMaterialDateRangePicker'])
     .controller('ctrl', function($scope, $mdDateRangePicker) {
+        $scope.mdLocalizationMap =  {
+            'Mon':'Mon*',
+            'This Week':'Current Week',
+        };
         $scope.selectedRange = {
             selectedTemplate: 'TW',
             selectedTemplateName: 'This Week',
