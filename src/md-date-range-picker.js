@@ -170,7 +170,6 @@
         $scope.handleClickSelectLastYear = handleClickSelectLastYear;
 
         $scope.getLocalizationVal = getLocalizationVal;
-        //$scope.localizationMap = localizationMap;
        
         init();
        

@@ -3,8 +3,8 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Angular Material style sheet -->
-  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.0.4/angular-material.min.css">
-  <link rel="stylesheet" href="https://cdn.rawgit.com/yoni12ab/md-date-range-picker/master/src/md-date-range-picker.css">
+  <link rel="stylesheet" href="./angular-material/angular-material.css">
+  <link rel="stylesheet" href="./md-date-range-picker.css">
 </head>
 
 <body ng-app="demo.app" ng-cloak>
@@ -28,17 +28,16 @@
     ></md-date-range-picker>
   </div>
   <!-- Angular Material requires Angular.js Libraries -->
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
+  <script src="./angular/angular.js"></script>
+  <script src="./angular-animate/angular-animate.js"></script>
+  <script src="./angular-aria/angular-aria.js"></script>
+  <script src="./angular-messages/angular-messages.js"></script>
 
   <!-- Angular Material Library -->
-  <script src="//ajax.googleapis.com/ajax/libs/angular_material/1.0.4/angular-material.min.js"></script>
-
+  <script src="./angular-material/angular-material.js"></script>
 
   <!-- Angular Material Date Range Picker Library -->
-  <script src="https://cdn.rawgit.com/yoni12ab/md-date-range-picker/master/src/md-date-range-picker.js"></script>
+  <script src="./md-date-range-picker.js"></script>
 
   <!-- Your application bootstrap  -->
   <script type="text/javascript">    
@@ -46,10 +45,10 @@
      * You must include the dependency on 'ngMaterial' 
      */
     angular.module('demo.app', ['ngMaterial', 'ngMaterialDateRangePicker']).controller('ctrl',function($scope, $mdDateRangePicker){
-       $scope.mdLocalizationMap =  {
+      $scope.mdLocalizationMap =  {
             'Mon':'Mon*',
-            'This Week':'Current Week*',
-        };
+            'This Week':'Current Week',
+      };
       $scope.selectedRange = {selectedTemplate:'TW', selectedTemplateName: 'This Week',dateStart: null, dateEnd: null, showTemplate: false, fullscreen: false, firstDayOfWeek: 0};
       $scope.onSelect = function(scope){ console.log($scope.selectedRange.selectedTemplateName); return $scope.selectedRange.selectedTemplateName; };
       $scope.pick = function($event, showTemplate){
