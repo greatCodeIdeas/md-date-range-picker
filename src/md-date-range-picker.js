@@ -25,7 +25,8 @@
                 firstDayOfWeek: '=?',
                 showTemplate: '=?',
                 mdOnSelect: '&?',
-                localizationMap:'=?'
+                localizationMap:'=?',
+                customTemplates:'=?'
             },
             templateUrl: './md-date-range-picker.html',
             controller: 'mdDateRangePickerCtrl',
@@ -170,7 +171,9 @@
         $scope.handleClickSelectLastYear = handleClickSelectLastYear;
 
         $scope.getLocalizationVal = getLocalizationVal;
-       
+        $scope.selectCustomRange = selectCustomRange;
+        $scope.selectionTemplate =SELECTION_TEMPLATES;
+        
         init();
        
         function init() {
@@ -255,7 +258,12 @@
             }
         }
 
-            
+        function selectCustomRange(tmpltKey,tmpltObj){
+             $scope.dateStart = tmpltObj.dateStart;
+            $scope.dateEnd = tmpltObj.dateEnd;
+            $scope.selectedTemplate = tmpltKey;
+            $scope.selectedTemplateName = $scope.selectedDateText();
+        }    
         function getLocalizationVal(val){
             var ret = null;
               if($scope.localizationMap != null && $scope.localizationMap[val] != null){
@@ -376,7 +384,7 @@
             var d = new Date($scope.activeDate.getFullYear(), $scope.activeDate.getMonth() - 1, 1);
             $scope.focusToDate(d);
         }
-
+            
         function handleClickSelectToday() {
             var d = new Date(), d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
@@ -502,7 +510,9 @@
                             'dd MMM yyyy'
                         );
                 }
-            } else {
+            }else if ($scope.customTemplates != null && $scope.customTemplates[$scope.selectedTemplate] != null){
+                return $scope.selectedTemplate;
+            }else {
                 return SELECTION_TEMPLATES[$scope.selectedTemplate];
             }
         }
