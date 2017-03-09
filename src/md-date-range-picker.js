@@ -12,6 +12,7 @@
         .directive('mdDateRange', mdDateRangeDirective)
         .controller('mdDateRangePickerCtrl', mdDateRangePickerCtrl)
         .service('$mdDateRangePicker', mdDateRangePickerService);
+        
     /**
      * scope here is non-bi-directional
      */
@@ -26,82 +27,86 @@
                 showTemplate: '=?',
                 mdOnSelect: '&?',
                 localizationMap:'=?',
-                customTemplates:'=?'
+                customTemplates:'=?',
+                disableTemplates:'@'
             },
             templateUrl: './md-date-range-picker.html',
             controller: 'mdDateRangePickerCtrl',
             link: function (scope, element, attributes, ctrl) {
+                    scope.actionByKey = function(eventKey,eventParam,e)
+                    {
+                                switch (eventKey) {
+                                        case 'prev':
+                                            scope.handleClickPrevMonth(e);
+                                            scope.runIfNotInDigest();
+                                            break;
+                                        case 'next':
+                                            scope.handleClickNextMonth(e);
+                                            scope.runIfNotInDigest();
+                                            break;
+                                        case 'date1':
+                                            if (scope.handleClickDate(e, scope.dates[eventParam])) {
+                                                scope.runIfNotInDigest(scope.triggerChange);
+                                            } else {
+                                                scope.runIfNotInDigest();
+                                            }
+                                            break;
+                                        case 'date2':
+                                            if (scope.handleClickDate(e, scope.dates2[eventParam])) {
+                                                scope.runIfNotInDigest(scope.triggerChange);
+                                            } else {
+                                                scope.runIfNotInDigest();
+                                            }
+                                            break;
+                                        case 'TD':
+                                            scope.handleClickSelectToday();
+                                            scope.runIfNotInDigest(scope.triggerChange);
+                                            break;
+                                        case 'YD':
+                                            scope.handleClickSelectYesterday();
+                                            scope.runIfNotInDigest(scope.triggerChange);
+                                            break;
+                                        case 'TW':
+                                            scope.handleClickSelectThisWeek();
+                                          scope.runIfNotInDigest(scope.triggerChange);
+                                            break;
+                                        case 'LW':
+                                            scope.handleClickSelectLastWeek();
+                                           scope.runIfNotInDigest(scope.triggerChange);
+                                            break;
+                                        case 'TM':
+                                            scope.handleClickSelectThisMonth();
+                                            scope.runIfNotInDigest(scope.triggerChange);
+                                            break;
+                                        case 'LM':
+                                            scope.handleClickSelectLastMonth();
+                                           scope.runIfNotInDigest(scope.triggerChange);
+                                            break;
+                                        case 'TY':
+                                            scope.handleClickSelectThisYear();
+                                           scope.runIfNotInDigest(scope.triggerChange);
+                                            break;
+                                        case 'LY':
+                                            scope.handleClickSelectLastYear();
+                                            scope.runIfNotInDigest(scope.triggerChange);
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                    }
+
+                scope.runIfNotInDigest = function (operation) {
+                    if (scope.$root != null && !scope.$root.$$phase) { // check if digest already in progress
+                        scope.$apply(); // launch digest;
+                        if (operation && typeof operation === 'function'){
+                            operation();
+                        }
+                    }
+                };    
                 element.on('click', function (e) {
                     var eventKey = e.target.getAttribute('event-key'),
                         eventParam = e.target.getAttribute('event-param');
-                    switch (eventKey) {
-                        case 'prev':
-                            scope.handleClickPrevMonth(e);
-                            scope.$apply();
-                            break;
-                        case 'next':
-                            scope.handleClickNextMonth(e);
-                            scope.$apply();
-                            break;
-                        case 'date1':
-                            if (scope.handleClickDate(e, scope.dates[eventParam])) {
-                                scope.$apply();
-                                scope.triggerChange();
-                            } else {
-                                scope.$apply();
-                            }
-                            break;
-                        case 'date2':
-                            if (scope.handleClickDate(e, scope.dates2[eventParam])) {
-                                scope.$apply();
-                                scope.triggerChange();
-                            } else {
-                                scope.$apply();
-                            }
-                            break;
-                        case 'TD':
-                            scope.handleClickSelectToday();
-                            scope.$apply();
-                            scope.triggerChange();
-                            break;
-                        case 'YD':
-                            scope.handleClickSelectYesterday();
-                            scope.$apply();
-                            scope.triggerChange();
-                            break;
-                        case 'TW':
-                            scope.handleClickSelectThisWeek();
-                            scope.$apply();
-                            scope.triggerChange();
-                            break;
-                        case 'LW':
-                            scope.handleClickSelectLastWeek();
-                            scope.$apply();
-                            scope.triggerChange();
-                            break;
-                        case 'TM':
-                            scope.handleClickSelectThisMonth();
-                            scope.$apply();
-                            scope.triggerChange();
-                            break;
-                        case 'LM':
-                            scope.handleClickSelectLastMonth();
-                            scope.$apply();
-                            scope.triggerChange();
-                            break;
-                        case 'TY':
-                            scope.handleClickSelectThisYear();
-                            scope.$apply();
-                            scope.triggerChange();
-                            break;
-                        case 'LY':
-                            scope.handleClickSelectLastYear();
-                            scope.$apply();
-                            scope.triggerChange();
-                            break;
-                        default:
-                            break;
-                    }
+                    scope.actionByKey(eventKey,eventParam,e);
                 });
 
                 scope.triggerChange = function triggerChange() {
@@ -118,15 +123,17 @@
     function mdDateRangePickerCtrl($scope, $filter) {
         var ctrl = $scope, NUMBER_OF_MONTH_TO_DISPLAY = 2,
             SELECTION_TEMPLATES = {
-                'TD': 'Today',
-                'YD': 'Yesterday',
-                'TW': 'This Week',
-                'LW': 'Last Week',
-                'TM': 'This Month',
-                'LM': 'Last Month',
-                'TY': 'This Year',
-                'LY': 'Last Year'
-            }, START_OF_WEEK = 1;
+                'TD': getLocalizationVal('Today'),
+                'YD': getLocalizationVal('Yesterday'),
+                'TW': getLocalizationVal('This Week'),
+                'LW': getLocalizationVal('Last Week'),
+                'TM': getLocalizationVal('This Month'),
+                'LM': getLocalizationVal('Last Month'),
+                'TY': getLocalizationVal('This Year'),
+                'LY': getLocalizationVal('Last Year')
+            }, START_OF_WEEK = 1
+            SELECTION_TEMPLATES_CUSTOM = {}
+            ;
         $scope.isMenuContainer = false;
         $scope.days = [];
         $scope.label = 'Date range picker';
@@ -172,7 +179,7 @@
 
         $scope.getLocalizationVal = getLocalizationVal;
         $scope.selectCustomRange = selectCustomRange;
-        $scope.selectionTemplate =SELECTION_TEMPLATES;
+        $scope.selectionTemplate = {};
         
         init();
        
@@ -256,6 +263,33 @@
             for (yctr = y - 10; yctr < y + 10; yctr++) {
                 $scope.years.push({ id: yctr, name: getLocalizationVal(yctr) })
             }
+
+            /**
+             * add custom template to local custom template array 
+            */
+            for(var i = 0;i < $scope.customTemplates.length;i++ ){
+                var currTmpl = $scope.customTemplates[i];
+                SELECTION_TEMPLATES_CUSTOM[currTmpl.name] = currTmpl;
+            }  
+			/**
+             * get the templates to use 
+            */
+            for (var tmplKey in SELECTION_TEMPLATES) {
+                if (SELECTION_TEMPLATES.hasOwnProperty(tmplKey)) {
+                    //check if we have disable templates property 
+                    if($scope.disableTemplates != null && $scope.disableTemplates != '' ){
+                        //if key is not exist in disableTemplates property add it
+                        if($scope.disableTemplates.indexOf(tmplKey) < 0){
+                            $scope.selectionTemplate[tmplKey] = SELECTION_TEMPLATES[tmplKey];
+                        }
+                    }else{
+                        $scope.selectionTemplate[tmplKey] = SELECTION_TEMPLATES[tmplKey];      
+                    }
+                        
+                }
+            }
+                
+            
         }
 
         function selectCustomRange(tmpltKey,tmpltObj){
@@ -510,8 +544,8 @@
                             'dd MMM yyyy'
                         );
                 }
-            }else if ($scope.customTemplates != null && $scope.customTemplates[$scope.selectedTemplate] != null){
-                return $scope.selectedTemplate;
+            }else if (SELECTION_TEMPLATES_CUSTOM != null && SELECTION_TEMPLATES_CUSTOM[$scope.selectedTemplate] != null){
+                return SELECTION_TEMPLATES_CUSTOM[$scope.selectedTemplate].name; 
             }else {
                 return SELECTION_TEMPLATES[$scope.selectedTemplate];
             }
