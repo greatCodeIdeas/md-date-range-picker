@@ -35,6 +35,7 @@ html
       first-day-of-week="0"
       localization-map="mdLocalizationMap"
       custom-templates="mdCustomTemplates"
+      disable-templates="TW,LW"
     ></md-date-range-picker>
   </div>
 </body>
@@ -44,16 +45,17 @@ js
 angular.module('demo.app', ['ngMaterial', 'ngMaterialDateRangePicker'])
     .controller('ctrl', function($scope, $mdDateRangePicker) {
         var tmpToday = new Date();
-        $scope.mdCustomTemplates = {
-            "Last 3 Months" : {
+       $scope.mdCustomTemplates = [
+            {   name:"Last 3 Months",
                 dateStart: new Date((new Date()).setMonth(tmpToday.getMonth() - 3)),
                 dateEnd : new Date()
             },
-            "Last 6 Months" : {
+            {
+                name:"Last 6 Months",
                 dateStart: new Date((new Date()).setMonth(tmpToday.getMonth() - 6)),
                 dateEnd : new Date()
             }
-        };
+        ];
         $scope.mdLocalizationMap =  {
             'Mon':'Mon*',
             'This Week':'Current Week',
