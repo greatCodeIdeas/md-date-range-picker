@@ -13,6 +13,7 @@ rimraf(path.join(__dirname, 'dist', '*'), build);
 
 function build(){
     console.log('build started...');
+    try{
     var date = new Date().toLocaleDateString();
     var fs = require('fs');
     var jsp = require("uglify-js").parser;
@@ -43,11 +44,29 @@ function build(){
     ast = pro.ast_mangle(ast); // get a new AST with mangled names
     ast = pro.ast_squeeze(ast); // get an AST with compression optimizations
     final_code = pro.gen_code(ast); // compressed code here
-    fs.writeFile(appJsOut, appjs.replace('${date}',date).replace('${version}',version)); //write unminified
-    fs.writeFile(appJsMinOut, final_code); //write minifieds
-    fs.writeFile(appCssOut, cssTemplate.replace('${date}',date).replace('${version}',version)); //write css
-    fs.writeFile(appCssMinOut, css.styles); //write min css
-
-    console.log('build finisheds...');
+    console.log('writing file '+appJsOut+'...');
+    fs.writeFile(appJsOut, appjs.replace('${date}',date).replace('${version}',version), 
+        function(){
+            console.log('writing file '+appJsMinOut+'...');
+            fs.writeFile(appJsMinOut, final_code, 
+                function () {
+                    console.log('writing file '+appCssOut+'...');
+                    fs.writeFile(appCssOut, cssTemplate.replace('${date}',date).replace('${version}',version),
+                        function() {
+                            console.log('writing file '+appCssMinOut+'...');
+                            fs.writeFile(appCssMinOut, css.styles, 
+                                function() {
+                                    console.log('build success...');
+                                }
+                            ); //write min css
+                        }
+                    ); //write css
+                }            
+            ); //write minifieds
+        }
+    ); //write unminified
+    }catch(e){
+        console.error(e);
+    }
 
 }

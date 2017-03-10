@@ -31,7 +31,7 @@ html
       date-end="selectedRange.dateEnd"
       selected-template-name="selectedRange.selectedTemplateName"
       selected-template="selectedRange.selectedTemplate"
-      show-template="true"
+      show-template="false"
       first-day-of-week="0"
       localization-map="mdLocalizationMap"
       custom-templates="mdCustomTemplates"
