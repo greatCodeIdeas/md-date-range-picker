@@ -66,37 +66,47 @@
             </div>  
         </div>
         <div class="md-date-range-picker__templates" ng-if="showTemplate">
-            <div class="hide show-gt-sm" layout="row">
-                <div flex layout="column">
-                    <span class="md-button" aria-label="Today" ng-class="selectedTemplate === 'TD' ? 'md-primary md-raised' : ''" event-key="TD" ng-bind="::getLocalizationVal('Today')" ></span>
-                    <span class="md-button" aria-label="Yesterday" ng-class="selectedTemplate === 'YD' ? 'md-primary md-raised' : ''" event-key="YD" ng-bind="::getLocalizationVal('Yesterday')"></span>
+            <div class="hide show-gt-sm" layout="row" layout-align="center center" layout-wrap>
+                <div ng-repeat="(tmpltKey,tmpltName) in selectionTemplate"
+                    class="md-button" 
+                    aria-label="{{::tmpltName}}" 
+                    ng-class="selectedTemplate === tmpltKey ? 'md-primary md-raised' : ''" 
+                    event-key="{{tmpltKey}}" 
+                    ng-bind="::tmpltName"
+                    flex="20"
+                >
                 </div>
-                <div flex layout="column">
-                    <span class="md-button" aria-label="This Week" ng-class="selectedTemplate === 'TW' ? 'md-primary md-raised' : ''" event-key="TW" ng-bind="::getLocalizationVal('This Week')">This Week</span>
-                    <span class="md-button" aria-label="Last Week" ng-class="selectedTemplate === 'LW' ? 'md-primary md-raised' : ''" event-key="LW" ng-bind="::getLocalizationVal('Last Week')">Last Week</span>
-                </div>
-                <div flex layout="column">
-                    <span class="md-button" aria-label="This Month" ng-class="selectedTemplate === 'TM' ? 'md-primary md-raised' : ''" event-key="TM" ng-bind="::getLocalizationVal('This Month')">This Month</span>
-                    <span class="md-button" aria-label="Last Month" ng-class="selectedTemplate === 'LM' ? 'md-primary md-raised' : ''" event-key="LM" ng-bind="::getLocalizationVal('Last Month')">Last Month</span>
-                </div>
-                <div flex layout="column">
-                    <span class="md-button" aria-label="This Year" ng-class="selectedTemplate === 'TY' ? 'md-primary md-raised' : ''" event-key="TY" ng-bind="::getLocalizationVal('This Year')">This Year</span>
-                    <span class="md-button" aria-label="Last Year" ng-class="selectedTemplate === 'LY' ? 'md-primary md-raised' : ''" event-key="LY" ng-bind="::getLocalizationVal('Last Year')">Last Year</span>
+                <div ng-repeat="tmplt in customTemplates"
+                    class="md-button" 
+                    aria-label="{{::tmplt.name}}" 
+                    ng-class="selectedTemplate === tmplt.name ? 'md-primary md-raised' : ''" 
+                    ng-click="selectCustomRange(tmplt.name,tmplt)" 
+                    ng-bind="::tmplt.name"
+                    flex="20"
+                >    
                 </div>
             </div>
-            <div class="hide-gt-sm" layout="column" layout-padding>
+            
+            <div  class="hide-gt-sm" layout="column" layout-padding>
                 <md-input-container>
-                    <label>Date Range Template</label>
+                    <label>{{::getLocalizationVal('Date Range Template')}}</label>
                     <md-select md-container-class="md-date-range-picker__select" class="md-block" placeholder="Custom Date Range" ng-model="selectedTemplate">
                         <md-option value=""></md-option>
-                        <md-option aria-label="Today" value="TD" ng-click="handleClickSelectToday()" ng-bind="::getLocalizationVal('Today')"></md-option>
-                        <md-option aria-label="Yesterday" value="YD" ng-click="handleClickSelectYesterday()" ng-bind="::getLocalizationVal('Yesterday')"></md-option>
-                        <md-option aria-label="This Week" value="TW" ng-click="handleClickSelectThisWeek()" ng-bind="::getLocalizationVal('This Week')"></md-option>
-                        <md-option aria-label="Last Week" value="LW" ng-click="handleClickSelectLastWeek()" ng-bind="::getLocalizationVal('Last Week')"></md-option>
-                        <md-option aria-label="This Month" value="TM" ng-click="handleClickSelectThisMonth()" ng-bind="::getLocalizationVal('This Month')"></md-option>
-                        <md-option aria-label="Last Month" value="LM" ng-click="handleClickSelectLastMonth()" ng-bind="::getLocalizationVal('Last Month')"></md-option>
-                        <md-option aria-label="This Year" value="TY" ng-click="handleClickSelectThisYear()" ng-bind="::getLocalizationVal('This Year')"></md-option>
-                        <md-option aria-label="Last Year" value="LY" ng-click="handleClickSelectLastYear()" ng-bind="::getLocalizationVal('Last Year')"></md-option>
+                        <md-option 
+                            ng-repeat="(tmpltKey,tmpltName) in selectionTemplate track by tmpltKey"
+                            aria-label="{{::tmpltName}}" 
+                            ng-click="actionByKey(tmpltKey,null)"    
+                            ng-bind="::tmpltName"
+                            value="{{tmpltKey}}"
+                        >
+                        </md-option>
+                        <md-option ng-repeat="tmplt in customTemplates"
+                            aria-label="{{::tmplt.name}}" 
+                            ng-click="selectCustomRange(tmplt.name,tmplt)" 
+                            ng-bind="::tmplt.name"
+                            value="{{::tmplt.name}}"
+                        >    
+                        </md-option>   
                     </md-select>
                 </md-input-container>
             </div>
