@@ -28,7 +28,7 @@
                 mdOnSelect: '&?',
                 localizationMap:'=?',
                 customTemplates:'=?',
-                disableTemplates:'@?'
+                disableTemplates:'@'
             },
             templateUrl: './md-date-range-picker.html',
             controller: 'mdDateRangePickerCtrl',
