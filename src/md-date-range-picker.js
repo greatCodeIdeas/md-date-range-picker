@@ -264,14 +264,17 @@
                 $scope.years.push({ id: yctr, name: getLocalizationVal(yctr) })
             }
 
-            /**
+            /** 
              * add custom template to local custom template array 
             */
-            for(var i = 0;$scope.customTemplates && i < $scope.customTemplates.length;i++ ){
-                var currTmpl = $scope.customTemplates[i];
-                SELECTION_TEMPLATES_CUSTOM[currTmpl.name] = currTmpl;
-            }  
-			/**
+            if($scope.customTemplates != null){
+                for(var i = 0;i < $scope.customTemplates.length;i++ ){
+                    var currTmpl = $scope.customTemplates[i];
+                    SELECTION_TEMPLATES_CUSTOM[currTmpl.name] = currTmpl;
+                }  
+            }
+
+			    /**
              * get the templates to use 
             */
             for (var tmplKey in SELECTION_TEMPLATES) {
@@ -587,6 +590,9 @@
                 '     date-end="ngModel.dateEnd" ',
                 '     show-template="ngModel.showTemplate" ',
                 '     selected-template="ngModel.selectedTemplate" ',
+                '     localization-map="ngModel.localizationMap" ',
+                '     custom-templates="ngModel.customTemplates" ',
+                '     disable-templates="{{ngModel.disableTemplates}}" ',
                 '     selected-template-name="ngModel.selectedTemplateName"></md-date-range-picker>',
                 '<p ng-if="!autoConfirm" layout="row" layout-align="end center">',
                 '<md-button class="md-raised md-primary" ng-click="ok()">Ok</md-button>',
@@ -638,8 +644,11 @@
                         'date-end="model.dateEnd" ',
                         'show-template="model.showTemplate" ',
                         'selected-template="model.selectedTemplate" ',
-                        'selected-template-name="model.selectedTemplateName"',
-                        'first-day-of-week="firstDayOfWeek || model.firstDayOfWeek"',
+                        'selected-template-name="model.selectedTemplateName" ',
+                        'first-day-of-week="firstDayOfWeek || model.firstDayOfWeek" ',
+                        'localization-map="model.localizationMap" ',
+                        'custom-templates="model.customTemplates" ',
+                        'disable-templates="{{model.disableTemplates}}" ',
                         '>',
                         '</md-date-range-picker>',
                         '</md-dialog-content>',

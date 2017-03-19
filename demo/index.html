@@ -41,7 +41,8 @@
           show-template="true"
           first-day-of-week="0"
           localization-map="mdLocalizationMap"
-          custom-templates="mdCustomTemplates"
+          custom-templates="mdCustomTemplates" 
+          disable-templates="TW,LW"
         ></md-date-range-picker>
       </div>
     </div>
@@ -80,7 +81,30 @@
             'Mon':'Mon*',
             'This Week':'Current Week',
       };
-      $scope.selectedRange = {selectedTemplate:'TW', selectedTemplateName: 'This Week',dateStart: null, dateEnd: null, showTemplate: false, fullscreen: false, firstDayOfWeek: 0};
+      var tmpToday = new Date();
+      $scope.mdCustomTemplates = [
+            {   name:"Last 3 Months",
+                dateStart: new Date((new Date()).setMonth(tmpToday.getMonth() - 3)),
+                dateEnd : new Date()
+            },
+            {
+                name:"Last 6 Months",
+                dateStart: new Date((new Date()).setMonth(tmpToday.getMonth() - 6)),
+                dateEnd : new Date()
+            }
+        ];
+      $scope.selectedRange = {selectedTemplate:'TW', 
+                              selectedTemplateName: 'This Week',
+                              dateStart: null, 
+                              dateEnd: null, 
+                              showTemplate: false, 
+                              fullscreen: false, 
+                              firstDayOfWeek: 0,
+                              localizationMap:$scope.mdLocalizationMap,
+                              customTemplates:$scope.mdCustomTemplates,
+                              disableTemplates:"TW,LW"
+                            };
+                              
       $scope.onSelect = function(scope){ console.log($scope.selectedRange.selectedTemplateName); return $scope.selectedRange.selectedTemplateName; };
       $scope.pick = function($event, showTemplate){
         console.log('Button Fired!');
