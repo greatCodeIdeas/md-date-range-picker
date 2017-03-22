@@ -4,6 +4,8 @@ A simple Angular Date range picker with material theme
 
 ## ussage/code example 
 
+[![NPM](https://nodei.co/npm/md-date-range-picker.png)](https://npmjs.org/package/md-date-range-picker)
+
 - install using npm packages
 - `npm install md-date-range-picker`
 - install using bower
