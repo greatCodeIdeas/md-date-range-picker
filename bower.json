@@ -3,8 +3,8 @@
   "version": "0.4.2",
   "description": "Angular Material Date Range Picker",
   "main": [
-    "./dist/md-date-range-picker.min.js",
-    "./dist/md-date-range-picker.min.css"
+    "./dist/md-date-range-picker.js",
+    "./dist/md-date-range-picker.css"
   ],
   "authors": [
     "Roel Barreto <greatcodeideas@gmail.com>"
