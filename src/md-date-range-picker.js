@@ -573,12 +573,13 @@
         return {
             scope: {
                 ngModel: '=ngModel',
+                ngDisabled: '=ngDisabled',
                 showTemplate: '=',
                 placeholder: '@',
                 firstDayOfWeek: '@'
             },
-            template: ['<md-menu>',
-                '<span class="md-select-value" ng-click="$mdOpenMenu($event)">',
+            template: ['<md-menu ng-disabled="ngDisabled">',
+                '<span class="md-select-value" ng-click="!ngDisabled && $mdOpenMenu($event)">',
                 '  <span>{{ngModel.selectedTemplateName || placeholder}}</span>',
                 '  <span class="md-select-icon" aria-hidden="true"></span>',
                 '</span>',
