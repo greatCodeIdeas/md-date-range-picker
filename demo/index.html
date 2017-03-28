@@ -13,7 +13,9 @@
     <md-button class="md-raised md-primary" ng-click="pick($event, false)">Pick A Date Range</md-button>
     <md-button class="md-raised md-primary" ng-click="pick($event, true)">Pick A Date Range With Template</md-button>
     <md-button class="md-raised md-primary" ng-click="clear($event)">Clear Range</md-button>
+    <span>
     <md-date-range ng-model="selectedRange" placeholder="Select Date Range"></md-date-range>
+    </span>
     <h2>Selected Date Range: {{selectedRange.dateStart | date}} - {{selectedRange.dateEnd | date}}</h2>
     <h2>Selected Date Template:{{selectedRange.selectedTemplateName}} - {{selectedRange.selectedTemplate}}</h2>
     <div layout layout-margin>
@@ -102,7 +104,8 @@
                               firstDayOfWeek: 0,
                               localizationMap:$scope.mdLocalizationMap,
                               customTemplates:$scope.mdCustomTemplates,
-                              disableTemplates:"TW,LW"
+                              disableTemplates:"TW,LW",
+                              showClear:true,
                             };
                               
       $scope.onSelect = function(scope){ console.log($scope.selectedRange.selectedTemplateName); return $scope.selectedRange.selectedTemplateName; };

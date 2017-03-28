@@ -595,13 +595,29 @@
                 '     disable-templates="{{ngModel.disableTemplates}}" ',
                 '     selected-template-name="ngModel.selectedTemplateName"></md-date-range-picker>',
                 '<p ng-if="!autoConfirm" layout="row" layout-align="end center">',
-                '<md-button class="md-raised md-primary" ng-click="ok()">Ok</md-button>',
+                '<md-button ng-if="ngModel.showClear" class="md-raised" ng-click="clear()">{{getLocalizationVal("Clear")}}</md-button>',
+                '<md-button class="md-raised md-primary" ng-click="ok()">{{getLocalizationVal("Ok")}}</md-button>',
                 '</p>',
                 '</md-menu-content>',
                 '</md-menu>'].join(''),
             controller: ['$scope', '$mdMenu', function ($scope, $mdMenu) {
                 $scope.ok = function ok() {
                     $mdMenu.hide();
+                }
+                $scope.clear = function clear() {
+                    $scope.ngModel.selectedTemplateName = '';
+                    $scope.ngModel.selectedTemplate = null;
+                    $scope.ngModel.dateStart = null;
+                    $scope.ngModel.dateEnd = null;
+                }
+                $scope.getLocalizationVal = function getLocalizationVal(val){
+                    var ret = null;
+                    if($scope.ngModel.localizationMap != null && $scope.ngModel.localizationMap[val] != null){
+                        ret = $scope.ngModel.localizationMap[val];  
+                    }else{
+                        ret = val;
+                    }  
+                    return ret;
                 }
             }]
         };
@@ -623,12 +639,27 @@
                         $scope.model = mdDateRangePickerServiceModel || {};
                         $scope.model.selectedTemplateName = $scope.model.selectedTemplateName || '';
                         $scope.ok = function () {
-                            $scope.model.dateStart.setHours(0, 0, 0, 0);
-                            $scope.model.dateEnd.setHours(23, 59, 59, 999);
+                            $scope.model.dateStart && $scope.model.dateStart.setHours(0, 0, 0, 0);
+                            $scope.model.dateEnd && $scope.model.dateEnd.setHours(23, 59, 59, 999);
                             $mdDialog.hide($scope.model);
                         }
                         $scope.cancel = function () {
                             $mdDialog.hide(false);
+                        }
+                        $scope.clear = function clear() {
+                            $scope.model.selectedTemplateName = '';
+                            $scope.model.selectedTemplate = null;
+                            $scope.model.dateStart = null;
+                            $scope.model.dateEnd = null;
+                        }
+                        $scope.getLocalizationVal = function getLocalizationVal(val){
+                            var ret = null;
+                            if($scope.model.localizationMap != null && $scope.model.localizationMap[val] != null){
+                                ret = $scope.model.localizationMap[val];  
+                            }else{
+                                ret = val;
+                            }  
+                            return ret;
                         }
                     }],
                     template: ['<md-dialog aria-label="Date Range Picker">',
@@ -653,8 +684,9 @@
                         '</md-date-range-picker>',
                         '</md-dialog-content>',
                         '<md-dialog-actions layout="row" layout-align="end center">',
-                        '<md-button ng-click="cancel()">Cancel</md-button>',
-                        '<md-button class="md-raised md-primary" ng-click="ok()">Ok</md-button>',
+                        '<md-button ng-click="cancel()">{{getLocalizationVal("Cancel")}}</md-button>',
+                        '<md-button class="md-raised" ng-click="clear()">{{getLocalizationVal("Clear")}}</md-button>',
+                        '<md-button class="md-raised md-primary" ng-click="ok()">{{getLocalizationVal("Ok")}}</md-button>',
                         '</md-dialog-actions>',
                         '</md-dialog>'].join(''),
                     parent: angular.element(document.body),
