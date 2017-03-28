@@ -1,6 +1,6 @@
 /*
 * Name: md-date-range-picker
-* Version: 0.4.3
+* Version: 0.4.4
 * Build Date: 3/28/2017
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
