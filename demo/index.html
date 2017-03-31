@@ -20,7 +20,7 @@
     <h2>Selected Date Template:{{selectedRange.selectedTemplateName}} - {{selectedRange.selectedTemplate}}</h2>
     <div layout layout-margin>
       <div>
-        <h2>md-date-range-picker</h2>
+        <h2>One panel with maxRange = 7</h2>
         <md-date-range-picker
           md-on-select="onSelect()"
           date-start="selectedRange.dateStart"
@@ -30,10 +30,27 @@
           show-template="true"
           first-day-of-week="0"
           localization-map="mdLocalizationMap"
+          max-range="7"
+          one-panel="true"
         ></md-date-range-picker>
       </div>
       <div>
-        <h2>md-date-range-picker with custom template</h2>
+        <h2>Disabled future Dates</h2>
+        <md-date-range-picker
+          md-on-select="onSelect()"
+          date-start="selectedRange.dateStart"
+          date-end="selectedRange.dateEnd"
+          selected-template-name="selectedRange.selectedTemplateName"
+          selected-template="selectedRange.selectedTemplate"
+          show-template="true"
+          first-day-of-week="0"
+          localization-map="mdLocalizationMap"
+          one-panel="true"
+          is-disabled-date="isDisabledDate($date)"
+        ></md-date-range-picker>
+      </div>
+      <div>
+        <h2>md-date-range-picker with custom template disabled weekend</h2>
         <md-date-range-picker
           md-on-select="onSelect()"
           date-start="selectedRange.dateStart"
@@ -44,6 +61,7 @@
           first-day-of-week="0"
           localization-map="mdLocalizationMap"
           custom-templates="mdCustomTemplates" 
+          is-disabled-date="isDisabledWeekend($date)" 
           disable-templates="TW,LW"
         ></md-date-range-picker>
       </div>
@@ -121,6 +139,12 @@
         $scope.selectedRange.selectedTemplateName = null;
         $scope.selectedRange.dateStart = null;
         $scope.selectedRange.dateEnd = null;
+      }
+      $scope.isDisabledDate = function($date){
+        return $date > new Date();
+      }
+      $scope.isDisabledWeekend = function($date){
+        return [0,6,7].indexOf($date.getDay()) > -1;
       }
     });
   </script>
