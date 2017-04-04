@@ -45,13 +45,13 @@ function build(){
     ast = pro.ast_squeeze(ast); // get an AST with compression optimizations
     final_code = pro.gen_code(ast); // compressed code here
     console.log('writing file '+appJsOut+'...');
-    fs.writeFile(appJsOut, appjs.replace('${date}',date).replace('${version}',version), 
+    fs.writeFile(appJsOut, appjs.replace('${builddate}',date).replace('${version}',version), 
         function(){
             console.log('writing file '+appJsMinOut+'...');
             fs.writeFile(appJsMinOut, final_code, 
                 function () {
                     console.log('writing file '+appCssOut+'...');
-                    fs.writeFile(appCssOut, cssTemplate.replace('${date}',date).replace('${version}',version),
+                    fs.writeFile(appCssOut, cssTemplate.replace('${builddate}',date).replace('${version}',version),
                         function() {
                             console.log('writing file '+appCssMinOut+'...');
                             fs.writeFile(appCssMinOut, css.styles, 

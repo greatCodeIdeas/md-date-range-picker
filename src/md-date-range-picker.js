@@ -1,7 +1,7 @@
 /*
 * Name: md-date-range-picker
 * Version: ${version}
-* Build Date: ${date}
+* Build Date: ${builddate}
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
 (function (window, angular) {
@@ -641,7 +641,7 @@
                 }
                 $scope.getLocalizationVal = function getLocalizationVal(val) {
                     var ret = null;
-                    if ($scope.ngModel.localizationMap != null && $scope.ngModel.localizationMap[val] != null) {
+                    if ($scope.ngModel && $scope.ngModel.localizationMap != null && $scope.ngModel.localizationMap[val] != null) {
                         ret = $scope.ngModel.localizationMap[val];
                     } else {
                         ret = val;
@@ -683,7 +683,7 @@
                         }
                         $scope.getLocalizationVal = function getLocalizationVal(val) {
                             var ret = null;
-                            if ($scope.model.localizationMap != null && $scope.model.localizationMap[val] != null) {
+                            if ($scope.model && $scope.model.localizationMap != null && $scope.model.localizationMap[val] != null) {
                                 ret = $scope.model.localizationMap[val];
                             } else {
                                 ret = val;
