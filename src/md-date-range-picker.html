@@ -8,11 +8,11 @@
                             <md-icon md-svg-src="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnPjxwb2x5Z29uIHBvaW50cz0iMTUuNCw3LjQgMTQsNiA4LDEyIDE0LDE4IDE1LjQsMTYuNiAxMC44LDEyICIvPjwvZz48L3N2Zz4="></md-icon>
                         </span>
                     </div>
-                    <md-select md-container-class="md-date-range-picker__select" md-on-close="updateActiveDate()" ng-model="activeMonth" placeholder="Month"
+                    <md-select md-container-class="md-date-range-picker__select" md-on-close="updateActiveDate()" ng-model="activeMonth" placeholder="{{::getLocalizationVal('Month')}}"
                         class="md-no-underline">
                         <md-option ng-value="::month.id" ng-repeat="month in months" ng-bind="::month.name"></md-option>
                     </md-select>
-                    <md-select md-container-class="md-date-range-picker__select" md-on-close="updateActiveDate()" ng-model="activeYear" placeholder="Year"
+                    <md-select md-container-class="md-date-range-picker__select" md-on-close="updateActiveDate()" ng-model="activeYear" placeholder="{{::getLocalizationVal('Year')}}"
                         class="md-no-underline">
                         <md-option ng-value="::year.id" ng-repeat="year in years" ng-bind="::year.name"></md-option>
                     </md-select>
@@ -50,11 +50,11 @@
                         </span>
                     </div>
                     <md-select md-container-class="md-date-range-picker__select" md-on-close="updateActiveDate(true)" ng-model="activeMonth2"
-                        placeholder="Month" class="md-no-underline">
+                        placeholder="{{::getLocalizationVal('Month')}}" class="md-no-underline">
                         <md-option ng-value="::month.id" ng-repeat="month in months" ng-bind="::month.name"></md-option>
                     </md-select>
                     <md-select md-container-class="md-date-range-picker__select" md-on-close="updateActiveDate(true)" ng-model="activeYear2"
-                        placeholder="Year" class="md-no-underline">
+                        placeholder="{{::getLocalizationVal('Year')}}" class="md-no-underline">
                         <md-option ng-value="::year.id" ng-repeat="year in years" ng-bind="::year.name"></md-option>
                     </md-select>
                     <div flex layout="column" layout-align="center center">
@@ -87,7 +87,7 @@
             <div ng-if="!maxRange" ng-class="{'hide-gt-sm':!onePanel}" layout="column" layout-padding>
                 <md-input-container>
                     <label>{{::getLocalizationVal('Date Range Template')}}</label>
-                    <md-select md-container-class="md-date-range-picker__select" class="md-block" placeholder="Custom Date Range" ng-model="selectedTemplate">
+                    <md-select md-container-class="md-date-range-picker__select" class="md-block" placeholder="{{::getLocalizationVal('Custom Date Range')}}" ng-model="selectedTemplate">
                         <md-option value=""></md-option>
                         <md-option ng-repeat="(tmpltKey,tmpltName) in selectionTemplate track by tmpltKey" aria-label="{{::tmpltName}}" ng-click="actionByKey(tmpltKey,null)"
                             ng-bind="::tmpltName" value="{{tmpltKey}}">
