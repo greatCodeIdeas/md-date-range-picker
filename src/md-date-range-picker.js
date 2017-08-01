@@ -111,8 +111,8 @@
                     scope.actionByKey(eventKey, eventParam, e);
                 });
 
-                scope.triggerChange = function triggerChange() {
-                    if (scope.mdOnSelect && typeof scope.mdOnSelect === 'function') {
+                scope.triggerChange = function triggerChange(e) {
+                    if (scope.mdOnSelect) {
                         scope.mdOnSelect();
                     }
                 };
@@ -385,19 +385,25 @@
 
         function handleClickDate($event, date) {
             var changed = false;
+            var shouldConfirm = false;
             if (getDateDiff($scope.dateStart, $scope.dateEnd) === 0) {
-                if (!$scope.isDisabledDate || !$scope.isDisabledDate({ $date: date })) {
+                if (getDateDiff($scope.dateStart, date) === 0) {
+                    shouldConfirm = true;
+                    changed = true;
+                } else if (!$scope.isDisabledDate || !$scope.isDisabledDate({ $date: date })) {
                     var diff = getDateDiff($scope.dateStart, date);
                     if (diff > 0) {
                         // Check if maxRange
                         if ($scope.maxRange && Math.abs(Math.ceil(diff / (1000 * 3600 * 24))) + 1 <= $scope.maxRange || !$scope.maxRange) {
                             $scope.dateEnd = date;
+                            shouldConfirm = true;
                             changed = true;
                         }
                     } else {
                         // Check if maxRange
                         if ($scope.maxRange && Math.abs(Math.ceil(diff / (1000 * 3600 * 24))) + 1 <= $scope.maxRange || !$scope.maxRange) {
                             $scope.dateStart = date;
+                            shouldConfirm = true;
                             changed = true;
                         }
                     }
@@ -413,7 +419,7 @@
                 $scope.selectedTemplate = false;
                 $scope.selectedTemplateName = $scope.selectedDateText();
             }
-            return changed;
+            return shouldConfirm;
         }
 
         function inSelectedDateRange(date) {
@@ -598,6 +604,7 @@
         return {
             scope: {
                 ngModel: '=ngModel',
+                autoConfirm: '=autoConfirm',
                 ngDisabled: '=ngDisabled',
                 showTemplate: '=',
                 placeholder: '@',
@@ -609,7 +616,7 @@
                 '  <span class="md-select-icon" aria-hidden="true"></span>',
                 '</span>',
                 '<md-menu-content class="md-custom-menu-content" style="max-height: none!important; height: auto!important; padding: 0!important;">',
-                '    <span style="text-align: left; padding: 12px 20px 0 20px; text-transform: uppercase" disabled>{{ngModel.selectedTemplateName}}</span>',
+                '    <span style="text-align: left; padding: 12px 20px 0 20px" disabled>{{ngModel.selectedTemplateName || placeholder}}</span>',
                 '    <md-date-range-picker show-template="true" first-day-of-week="firstDayOfWeek" ',
                 '     md-on-select="autoConfirm && ok()" ',
                 '     date-start="ngModel.dateStart" ',
