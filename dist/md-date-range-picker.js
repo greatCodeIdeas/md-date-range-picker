@@ -1,6 +1,6 @@
 /*
 * Name: md-date-range-picker
-* Version: 0.5.4
+* Version: 0.5.5
 * Build Date: 8/1/2017
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
@@ -328,7 +328,7 @@
             var dates = [],
                 monthStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
                 monthEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0),
-                calendarStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1 - (monthStartDate.getDay()==0?6:(monthStartDate.getDay() - getFirstDayOfWeek()))),
+                calendarStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1 - (monthStartDate.getDay() == 0 ? 6 : (monthStartDate.getDay() - getFirstDayOfWeek()))),
                 calendarEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 7 - (monthEndDate.getDay() - getFirstDayOfWeek())),
                 calendar = calendarStartDate;
             while (calendar < calendarEndDate) {
@@ -604,7 +604,7 @@
                 firstDayOfWeek: '@'
             },
             template: ['<md-menu ng-disabled="ngDisabled">',
-                '<span class="md-select-value" ng-click="!ngDisabled && $mdOpenMenu($event)">',
+                '<span class="md-select-value" ng-click="!ngDisabled && (($mdMenu && $mdMenu.open) ? $mdMenu.open($event) : $mdOpenMenu($event))">',
                 '  <span>{{ngModel.selectedTemplateName || placeholder}}</span>',
                 '  <span class="md-select-icon" aria-hidden="true"></span>',
                 '</span>',
