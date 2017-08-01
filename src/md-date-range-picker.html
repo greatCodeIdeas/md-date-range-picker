@@ -38,7 +38,7 @@
                 <div class="md-date-range-picker__calendar">
                     <span ng-repeat="date in dates" class="md-date-range-picker__calendar__grid" ng-class="{'md-date-range-picker__calendar__selected':inSelectedDateRange(date),'md-date-range-picker__calendar__start':isSelectedStartDate(date),'md-date-range-picker__calendar__end':isSelectedEndDate(date),'md-date-range-picker__calendar__not-in-active-month': !inCurrentMonth(date),'md-date-range-picker__calendar__today' : isToday(date),'md-date-range-picker__calendar__disabled': !isInMaxRange(date) || isDisabledDate({$date:date})}"
                         event-key="date1" event-param="{{$index}}">
-                        <span class="md-date-range-picker__calendar__selection" ng-bind={{::date.getDate()}}></span>
+                        <span event-key="date1" event-param="{{$index}}" class="md-date-range-picker__calendar__selection" ng-bind={{::date.getDate()}}></span>
                     </span>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                 <div class="md-date-range-picker__calendar">
                     <span ng-repeat="date in dates2" class="md-date-range-picker__calendar__grid" ng-class="{'md-date-range-picker__calendar__selected':inSelectedDateRange(date), 'md-date-range-picker__calendar__start':isSelectedStartDate(date), 'md-date-range-picker__calendar__end':isSelectedEndDate(date), 'md-date-range-picker__calendar__not-in-active-month': !inCurrentMonth(date, true), 'md-date-range-picker__calendar__today' : isToday(date),'md-date-range-picker__calendar__disabled': !isInMaxRange(date) || isDisabledDate({$date:date}) }"
                         event-key="date2" event-param="{{$index}}">
-                        <span class="md-date-range-picker__calendar__selection" ng-bind={{::date.getDate()}}></span>
+                        <span event-key="date1" event-param="{{$index}}" class="md-date-range-picker__calendar__selection" ng-bind={{::date.getDate()}}></span>
                     </span>
                 </div>
             </div>

@@ -386,7 +386,7 @@
         function handleClickDate($event, date) {
             var changed = false;
             if (getDateDiff($scope.dateStart, $scope.dateEnd) === 0) {
-                if (!$scope.isDisabledDate({ $date: date })) {
+                if (!$scope.isDisabledDate || !$scope.isDisabledDate({ $date: date })) {
                     var diff = getDateDiff($scope.dateStart, date);
                     if (diff > 0) {
                         // Check if maxRange
@@ -403,7 +403,7 @@
                     }
                 }
             } else {
-                if (!$scope.isDisabledDate({ $date: date })) {
+                if (!$scope.isDisabledDate || !$scope.isDisabledDate({ $date: date })) {
                     $scope.dateStart = date;
                     $scope.dateEnd = date;
                     changed = true;

@@ -1,6 +1,6 @@
 {
   "name": "md-date-range-picker",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "Angular Material Date Range Picker",
   "main": "./dist/md-date-range-picker.js",
   "scripts": {

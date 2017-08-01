@@ -1,6 +1,6 @@
 /*
 * Name: md-date-range-picker
-* Version: 0.5.5
+* Version: 0.5.6
 * Build Date: 8/1/2017
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
@@ -131,4 +131,8 @@ md-date-range-picker .md-date-range-picker__one-panel {
 
 .md-date-range-picker__select {
     z-index: 100;
+}
+
+.md-date-range-picker__calendar__selection {
+    pointer-events: none;
 }

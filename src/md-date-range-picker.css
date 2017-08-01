@@ -132,3 +132,7 @@ md-date-range-picker .md-date-range-picker__one-panel {
 .md-date-range-picker__select {
     z-index: 100;
 }
+
+.md-date-range-picker__calendar__selection {
+    pointer-events: none;
+}
