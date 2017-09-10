@@ -38,7 +38,7 @@ html
       localization-map="mdLocalizationMap"
       custom-templates="mdCustomTemplates"
       disable-templates="TW,LW"
-      is-disabled-date="isNotFuture($date)"
+      is-disabled-date="isFuture($date)"
     ></md-date-range-picker>
   </div>
 </body>
@@ -91,7 +91,7 @@ angular.module('demo.app', ['ngMaterial', 'ngMaterialDateRangePicker'])
             $scope.selectedRange.dateStart = null;
             $scope.selectedRange.dateEnd = null;
         }
-        $scope.isNotFuture = function($date) {
+        $scope.isFuture = function($date) {
           return $date.getTime() < new Date().getTime();
         }
     });
