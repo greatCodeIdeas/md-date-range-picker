@@ -1,7 +1,7 @@
 /*
 * Name: md-date-range-picker
-* Version: 0.5.7
-* Build Date: 8/1/2017
+* Version: 0.6.1
+* Build Date: 10/2/2017
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
 (function (window, angular) {
@@ -328,7 +328,7 @@
             var dates = [],
                 monthStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
                 monthEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0),
-                calendarStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1 - (monthStartDate.getDay() == 0 ? 6 : (monthStartDate.getDay() - getFirstDayOfWeek()))),
+                calendarStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1 - (monthStartDate.getDay() == getFirstDayOfWeek() ? 0 : (monthStartDate.getDay() - getFirstDayOfWeek()))),
                 calendarEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 7 - (monthEndDate.getDay() - getFirstDayOfWeek())),
                 calendar = calendarStartDate;
             while (calendar < calendarEndDate) {

@@ -1,7 +1,7 @@
 /*
 * Name: md-date-range-picker
-* Version: 0.5.7
-* Build Date: 8/1/2017
+* Version: 0.6.1
+* Build Date: 10/2/2017
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
 md-date-range {
@@ -88,7 +88,7 @@ md-date-range-picker .md-date-range-picker__one-panel {
 }
 
 .md-date-range-picker__calendar__not-in-active-month {
-    color: rgba(0,0,0,0.2);
+    color: rgba(0,0,0,0.5);
 }
 
 .md-date-range-picker__calendar 

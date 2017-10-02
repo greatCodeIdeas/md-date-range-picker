@@ -88,7 +88,7 @@ md-date-range-picker .md-date-range-picker__one-panel {
 }
 
 .md-date-range-picker__calendar__not-in-active-month {
-    color: rgba(0,0,0,0.2);
+    color: rgba(0,0,0,0.5);
 }
 
 .md-date-range-picker__calendar 
