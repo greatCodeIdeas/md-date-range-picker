@@ -1,7 +1,7 @@
 /*
 * Name: md-date-range-picker
-* Version: 0.2.2
-* Build Date: 2/14/2017
+* Version: 0.6.2
+* Build Date: 10/5/2017
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
 (function (window, angular) {
@@ -10,7 +10,9 @@
         .module('ngMaterialDateRangePicker', ['ngMaterial'])
         .directive('mdDateRangePicker', mdDateRangePickerDirective)
         .directive('mdDateRange', mdDateRangeDirective)
+        .controller('mdDateRangePickerCtrl', mdDateRangePickerCtrl)
         .service('$mdDateRangePicker', mdDateRangePickerService);
+
     /**
      * scope here is non-bi-directional
      */
@@ -19,93 +21,99 @@
             scope: {
                 selectedTemplate: '=',
                 selectedTemplateName: '=',
-                dateStart: '=',
-                dateEnd: '=',
+                dateStart: '=?',
+                dateEnd: '=?',
                 firstDayOfWeek: '=?',
                 showTemplate: '=?',
-                mdOnSelect: '&?'
+                mdOnSelect: '&?',
+                localizationMap: '=?',
+                customTemplates: '=?',
+                disableTemplates: '@',
+                maxRange: '=?',
+                onePanel: '=?',
+                isDisabledDate: '&?',
             },
-            template: '<div class="md-date-range-picker md-whiteframe-1dp"><div layout="column"><div layout="row" layout-margin><div class="md-date-range-picker__calendar-wrapper"><div class="md-date-range-picker__month-year" layout="row" layout-align="center center"><div flex layout="column" layout-align="center center"><span aria-label="Previous Month" class="md-button md-icon-button" event-key="prev"><md-icon md-svg-src="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnPjxwb2x5Z29uIHBvaW50cz0iMTUuNCw3LjQgMTQsNiA4LDEyIDE0LDE4IDE1LjQsMTYuNiAxMC44LDEyICIvPjwvZz48L3N2Zz4="></md-icon></span></div><md-select md-container-class="md-date-range-picker__select" md-on-close="ctrl.updateActiveDate()" ng-model="ctrl.activeMonth" placeholder="Month" class="md-no-underline"><md-option ng-value="::month.id" ng-repeat="month in ctrl.months" ng-bind="::month.name"></md-option></md-select><md-select md-container-class="md-date-range-picker__select" md-on-close="ctrl.updateActiveDate()" ng-model="ctrl.activeYear" placeholder="Year" class="md-no-underline"><md-option ng-value="::year.id" ng-repeat="year in ctrl.years" ng-bind="::year.name"></md-option></md-select><div flex layout="column" layout-align="center center" class="hide-gt-sm"><span aria-label="Next Month" class="md-icon-button md-button" event-key="next"><md-icon style="transform: rotate(-180deg)" md-svg-src="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnPjxwb2x5Z29uIHBvaW50cz0iMTUuNCw3LjQgMTQsNiA4LDEyIDE0LDE4IDE1LjQsMTYuNiAxMC44LDEyICIvPjwvZz48L3N2Zz4="></md-icon></span></div><div flex layout="column" layout-align="center center" class="hide show-gt-sm"><span aria-label="Next Month" ng-disabled="true" aria-hidden="true" class="md-icon-button md-button"><md-icon></md-icon></span></div></div><div class="md-date-range-picker__week" style="font-size: 0"><span class="md-date-range-picker__calendar__grid" ng-repeat="day in ctrl.days">{{::day.name}}</span></div><div class="md-date-range-picker__calendar"><span ng-repeat="date in ctrl.dates" class="md-date-range-picker__calendar__grid" ng-class="{\'md-date-range-picker__calendar__selected\':ctrl.inSelectedDateRange(date), \'md-date-range-picker__calendar__start\':ctrl.isSelectedStartDate(date), \'md-date-range-picker__calendar__end\':ctrl.isSelectedEndDate(date), \'md-date-range-picker__calendar__not-in-active-month\': !ctrl.inCurrentMonth(date), \'md-date-range-picker__calendar__today\' : ctrl.isToday(date) }" event-key="date1" event-param="{{$index}}"><span class="md-date-range-picker__calendar__selection" ng-bind="{{::date.getDate()}}"></span></span></div></div><div class="md-date-range-picker__calendar-wrapper hide show-gt-sm"><div class="md-date-range-picker__month-year" layout="row" layout-align="center center"><div flex layout="column" layout-align="center center" style="visibility: hidden"><span aria-label="Previous Month" class="md-button md-icon-button" event-key="prev"><md-icon md-svg-src="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnPjxwb2x5Z29uIHBvaW50cz0iMTUuNCw3LjQgMTQsNiA4LDEyIDE0LDE4IDE1LjQsMTYuNiAxMC44LDEyICIvPjwvZz48L3N2Zz4="></md-icon></span></div><md-select md-container-class="md-date-range-picker__select" md-on-close="ctrl.updateActiveDate(true)" ng-model="ctrl.activeMonth2" placeholder="Month" class="md-no-underline"><md-option ng-value="::month.id" ng-repeat="month in ctrl.months" ng-bind="::month.name"></md-option></md-select><md-select md-container-class="md-date-range-picker__select" md-on-close="ctrl.updateActiveDate(true)" ng-model="ctrl.activeYear2" placeholder="Year" class="md-no-underline"><md-option ng-value="::year.id" ng-repeat="year in ctrl.years" ng-bind="::year.name"></md-option></md-select><div flex layout="column" layout-align="center center"><span aria-label="Next Month" class="md-icon-button md-button" event-key="next"><md-icon style="transform: rotate(-180deg)" md-svg-src="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnPjxwb2x5Z29uIHBvaW50cz0iMTUuNCw3LjQgMTQsNiA4LDEyIDE0LDE4IDE1LjQsMTYuNiAxMC44LDEyICIvPjwvZz48L3N2Zz4="></md-icon></span></div></div><div class="md-date-range-picker__week" style="font-size: 0"><span class="md-date-range-picker__calendar__grid" ng-repeat="day in ctrl.days">{{::day.name}}</span></div><div class="md-date-range-picker__calendar"><span ng-repeat="date in ctrl.dates2" class="md-date-range-picker__calendar__grid" ng-class="{\'md-date-range-picker__calendar__selected\':ctrl.inSelectedDateRange(date), \'md-date-range-picker__calendar__start\':ctrl.isSelectedStartDate(date), \'md-date-range-picker__calendar__end\':ctrl.isSelectedEndDate(date), \'md-date-range-picker__calendar__not-in-active-month\': !ctrl.inCurrentMonth(date, true), \'md-date-range-picker__calendar__today\' : ctrl.isToday(date) }" event-key="date2" event-param="{{$index}}"><span class="md-date-range-picker__calendar__selection" ng-bind="{{::date.getDate()}}"></span></span></div></div></div><div class="md-date-range-picker__templates" ng-if="ctrl.showTemplate"><div class="hide show-gt-sm" layout="row"><div flex layout="column"><span class="md-button" aria-label="Today" ng-class="ctrl.selectedTemplate === \'TD\' ? \'md-primary md-raised\' : \'\'" event-key="TD">Today</span><span class="md-button" aria-label="Yesterday" ng-class="ctrl.selectedTemplate === \'YD\' ? \'md-primary md-raised\' : \'\'" event-key="YD">Yesterday</span></div><div flex layout="column"><span class="md-button" aria-label="This Week" ng-class="ctrl.selectedTemplate === \'TW\' ? \'md-primary md-raised\' : \'\'" event-key="TW">This Week</span><span class="md-button" aria-label="Last Week" ng-class="ctrl.selectedTemplate === \'LW\' ? \'md-primary md-raised\' : \'\'" event-key="LW">Last Week</span></div><div flex layout="column"><span class="md-button" aria-label="This Month" ng-class="ctrl.selectedTemplate === \'TM\' ? \'md-primary md-raised\' : \'\'" event-key="TM">This Month</span><span class="md-button" aria-label="Last Month" ng-class="ctrl.selectedTemplate === \'LM\' ? \'md-primary md-raised\' : \'\'" event-key="LM">Last Month</span></div><div flex layout="column"><span class="md-button" aria-label="This Year" ng-class="ctrl.selectedTemplate === \'TY\' ? \'md-primary md-raised\' : \'\'" event-key="TY">This Year</span><span class="md-button" aria-label="Last Year" ng-class="ctrl.selectedTemplate === \'LY\' ? \'md-primary md-raised\' : \'\'" event-key="LY">Last Year</span></div></div><div class="hide-gt-sm" layout="column" layout-padding><md-input-container><label>Date Range Template</label><md-select md-container-class="md-date-range-picker__select" class="md-block" placeholder="Custom Date Range" ng-model="ctrl.selectedTemplate"><md-option value=""></md-option><md-option aria-label="Today" value="TD" ng-click="ctrl.handleClickSelectToday()">Today</md-option><md-option aria-label="Yesterday" value="YD" ng-click="ctrl.handleClickSelectYesterday()">Yesterday</md-option><md-option aria-label="This Week" value="TW" ng-click="ctrl.handleClickSelectThisWeek()">This Week</md-option><md-option aria-label="Last Week" value="LW" ng-click="ctrl.handleClickSelectLastWeek()">Last Week</md-option><md-option aria-label="This Month" value="TM" ng-click="ctrl.handleClickSelectThisMonth()">This Month</md-option><md-option aria-label="Last Month" value="LM" ng-click="ctrl.handleClickSelectLastMonth()">Last Month</md-option><md-option aria-label="This Year" value="TY" ng-click="ctrl.handleClickSelectThisYear()">This Year</md-option><md-option aria-label="Last Year" value="LY" ng-click="ctrl.handleClickSelectLastYear()">Last Year</md-option></md-select></md-input-container></div></div></div></div>',
-            controllerAs: 'ctrl',
-            bindToController: true,
-            controller: mdDateRangePickerCtrl,
+            template: '<div class="md-date-range-picker md-whiteframe-1dp" ng-class="{\'md-date-range-picker__one-panel\':onePanel}"><div layout="column"><div layout="row" layout-margin><div class="md-date-range-picker__calendar-wrapper"><div class="md-date-range-picker__month-year" layout="row" layout-align="center center"><div flex layout="column" layout-align="center center"><span aria-label="Previous Month" class="md-button md-icon-button" event-key="prev"><md-icon md-svg-src="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnPjxwb2x5Z29uIHBvaW50cz0iMTUuNCw3LjQgMTQsNiA4LDEyIDE0LDE4IDE1LjQsMTYuNiAxMC44LDEyICIvPjwvZz48L3N2Zz4="></md-icon></span></div><md-select md-container-class="md-date-range-picker__select" md-on-close="updateActiveDate()" ng-model="activeMonth" placeholder="{{::getLocalizationVal(\'Month\')}}" class="md-no-underline"><md-option ng-value="::month.id" ng-repeat="month in months" ng-bind="::month.name"></md-option></md-select><md-select md-container-class="md-date-range-picker__select" md-on-close="updateActiveDate()" ng-model="activeYear" placeholder="{{::getLocalizationVal(\'Year\')}}" class="md-no-underline"><md-option ng-value="::year.id" ng-repeat="year in years" ng-bind="::year.name"></md-option></md-select><div flex layout="column" layout-align="center center" class="hide-gt-sm show-sm show-xs"><span aria-label="Next Month" class="md-icon-button md-button" event-key="next"><md-icon style="transform: rotate(-180deg)" md-svg-src="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnPjxwb2x5Z29uIHBvaW50cz0iMTUuNCw3LjQgMTQsNiA4LDEyIDE0LDE4IDE1LjQsMTYuNiAxMC44LDEyICIvPjwvZz48L3N2Zz4="></md-icon></span></div><div flex ng-if="onePanel" layout="column" layout-align="center center" class="hide-sm hide-xs show-gt-sm"><span aria-label="Next Month" class="md-icon-button md-button" event-key="next"><md-icon style="transform: rotate(-180deg)" md-svg-src="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnPjxwb2x5Z29uIHBvaW50cz0iMTUuNCw3LjQgMTQsNiA4LDEyIDE0LDE4IDE1LjQsMTYuNiAxMC44LDEyICIvPjwvZz48L3N2Zz4="></md-icon></span></div><div flex ng-if="!onePanel" layout="column" layout-align="center center" class="hide-sm hide-xs show-gt-sm"><span aria-label="Next Month" ng-disabled="true" aria-hidden="true" class="md-icon-button md-button"><md-icon></md-icon></span></div></div><div class="md-date-range-picker__week" style="font-size: 0"><span class="md-date-range-picker__calendar__grid" ng-repeat="day in days">{{::day.name}}</span></div><div class="md-date-range-picker__calendar"><span ng-repeat="date in dates" class="md-date-range-picker__calendar__grid" ng-class="{\'md-date-range-picker__calendar__selected\':inSelectedDateRange(date),\'md-date-range-picker__calendar__start\':isSelectedStartDate(date),\'md-date-range-picker__calendar__end\':isSelectedEndDate(date),\'md-date-range-picker__calendar__not-in-active-month\': !inCurrentMonth(date),\'md-date-range-picker__calendar__today\' : isToday(date),\'md-date-range-picker__calendar__disabled\': !isInMaxRange(date) || isDisabledDate({$date:date})}" event-key="date1" event-param="{{$index}}"><span event-key="date1" event-param="{{$index}}" class="md-date-range-picker__calendar__selection" ng-bind="{{::date.getDate()}}"></span></span></div></div><div ng-show="!onePanel" class="md-date-range-picker__calendar-wrapper hide-sm hide-xs show-gt-sm"><div class="md-date-range-picker__month-year" layout="row" layout-align="center center"><div flex layout="column" layout-align="center center" style="visibility: hidden"><span aria-label="Previous Month" class="md-button md-icon-button" event-key="prev"><md-icon md-svg-src="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnPjxwb2x5Z29uIHBvaW50cz0iMTUuNCw3LjQgMTQsNiA4LDEyIDE0LDE4IDE1LjQsMTYuNiAxMC44LDEyICIvPjwvZz48L3N2Zz4="></md-icon></span></div><md-select md-container-class="md-date-range-picker__select" md-on-close="updateActiveDate(true)" ng-model="activeMonth2" placeholder="{{::getLocalizationVal(\'Month\')}}" class="md-no-underline"><md-option ng-value="::month.id" ng-repeat="month in months" ng-bind="::month.name"></md-option></md-select><md-select md-container-class="md-date-range-picker__select" md-on-close="updateActiveDate(true)" ng-model="activeYear2" placeholder="{{::getLocalizationVal(\'Year\')}}" class="md-no-underline"><md-option ng-value="::year.id" ng-repeat="year in years" ng-bind="::year.name"></md-option></md-select><div flex layout="column" layout-align="center center"><span aria-label="Next Month" class="md-icon-button md-button" event-key="next"><md-icon style="transform: rotate(-180deg)" md-svg-src="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxnPjxwb2x5Z29uIHBvaW50cz0iMTUuNCw3LjQgMTQsNiA4LDEyIDE0LDE4IDE1LjQsMTYuNiAxMC44LDEyICIvPjwvZz48L3N2Zz4="></md-icon></span></div></div><div class="md-date-range-picker__week" style="font-size: 0" ng-if="!onePanel"><span class="md-date-range-picker__calendar__grid" ng-repeat="day in days">{{::day.name}}</span></div><div class="md-date-range-picker__calendar"><span ng-repeat="date in dates2" class="md-date-range-picker__calendar__grid" ng-class="{\'md-date-range-picker__calendar__selected\':inSelectedDateRange(date), \'md-date-range-picker__calendar__start\':isSelectedStartDate(date), \'md-date-range-picker__calendar__end\':isSelectedEndDate(date), \'md-date-range-picker__calendar__not-in-active-month\': !inCurrentMonth(date, true), \'md-date-range-picker__calendar__today\' : isToday(date),\'md-date-range-picker__calendar__disabled\': !isInMaxRange(date) || isDisabledDate({$date:date}) }" event-key="date2" event-param="{{$index}}"><span event-key="date2" event-param="{{$index}}" class="md-date-range-picker__calendar__selection" ng-bind="{{::date.getDate()}}"></span></span></div></div></div><div class="md-date-range-picker__templates" ng-if="showTemplate"><div ng-if="!onePanel && !maxRange" class="hide-xs hide-sm show-gt-sm" layout="row" layout-align="center center" layout-wrap><div ng-repeat="(tmpltKey,tmpltName) in selectionTemplate" class="md-button" aria-label="{{::tmpltName}}" ng-class="selectedTemplate === tmpltKey ? \'md-primary md-raised\' : \'\'" event-key="{{tmpltKey}}" ng-bind="::tmpltName" flex="20"></div><div ng-repeat="tmplt in customTemplates" class="md-button" aria-label="{{::tmplt.name}}" ng-class="selectedTemplate === tmplt.name ? \'md-primary md-raised\' : \'\'" ng-click="selectCustomRange(tmplt.name,tmplt)" ng-bind="::tmplt.name" flex="20"></div></div><div ng-if="!maxRange" ng-class="{\'hide-gt-sm\':!onePanel}" layout="column" layout-padding><md-input-container><label>{{::getLocalizationVal(\'Date Range Template\')}}</label><md-select md-container-class="md-date-range-picker__select" class="md-block" placeholder="{{::getLocalizationVal(\'Custom Date Range\')}}" ng-model="selectedTemplate"><md-option value=""></md-option><md-option ng-repeat="(tmpltKey,tmpltName) in selectionTemplate track by tmpltKey" aria-label="{{::tmpltName}}" ng-click="actionByKey(tmpltKey,null)" ng-bind="::tmpltName" value="{{tmpltKey}}"></md-option><md-option ng-repeat="tmplt in customTemplates" aria-label="{{::tmplt.name}}" ng-click="selectCustomRange(tmplt.name,tmplt)" ng-bind="::tmplt.name" value="{{::tmplt.name}}"></md-option></md-select></md-input-container></div></div></div></div>',
+            controller: 'mdDateRangePickerCtrl',
             link: function (scope, element, attributes, ctrl) {
-                element.on('click', function (e) {
-                    var eventKey = e.target.getAttribute('event-key'),
-                        eventParam = e.target.getAttribute('event-param');
+                scope.actionByKey = function (eventKey, eventParam, e) {
                     switch (eventKey) {
                         case 'prev':
-                            ctrl.handleClickPrevMonth(e);
-                            scope.$apply();
+                            scope.handleClickPrevMonth(e);
+                            scope.runIfNotInDigest();
                             break;
                         case 'next':
-                            ctrl.handleClickNextMonth(e);
-                            scope.$apply();
+                            scope.handleClickNextMonth(e);
+                            scope.runIfNotInDigest();
                             break;
                         case 'date1':
-                            if (ctrl.handleClickDate(e, ctrl.dates[eventParam])) {
-                                scope.$apply();
-                                ctrl.triggerChange();
+                            if (scope.handleClickDate(e, scope.dates[eventParam])) {
+                                scope.runIfNotInDigest(scope.triggerChange);
                             } else {
-                                scope.$apply();
+                                scope.runIfNotInDigest();
                             }
                             break;
                         case 'date2':
-                            if (ctrl.handleClickDate(e, ctrl.dates2[eventParam])) {
-                                scope.$apply();
-                                ctrl.triggerChange();
+                            if (scope.handleClickDate(e, scope.dates2[eventParam])) {
+                                scope.runIfNotInDigest(scope.triggerChange);
                             } else {
-                                scope.$apply();
+                                scope.runIfNotInDigest();
                             }
                             break;
                         case 'TD':
-                            ctrl.handleClickSelectToday();
-                            scope.$apply();
-                            ctrl.triggerChange();
+                            scope.handleClickSelectToday();
+                            scope.runIfNotInDigest(scope.triggerChange);
                             break;
                         case 'YD':
-                            ctrl.handleClickSelectYesterday();
-                            scope.$apply();
-                            ctrl.triggerChange();
+                            scope.handleClickSelectYesterday();
+                            scope.runIfNotInDigest(scope.triggerChange);
                             break;
                         case 'TW':
-                            ctrl.handleClickSelectThisWeek();
-                            scope.$apply();
-                            ctrl.triggerChange();
+                            scope.handleClickSelectThisWeek();
+                            scope.runIfNotInDigest(scope.triggerChange);
                             break;
                         case 'LW':
-                            ctrl.handleClickSelectLastWeek();
-                            scope.$apply();
-                            ctrl.triggerChange();
+                            scope.handleClickSelectLastWeek();
+                            scope.runIfNotInDigest(scope.triggerChange);
                             break;
                         case 'TM':
-                            ctrl.handleClickSelectThisMonth();
-                            scope.$apply();
-                            ctrl.triggerChange();
+                            scope.handleClickSelectThisMonth();
+                            scope.runIfNotInDigest(scope.triggerChange);
                             break;
                         case 'LM':
-                            ctrl.handleClickSelectLastMonth();
-                            scope.$apply();
-                            ctrl.triggerChange();
+                            scope.handleClickSelectLastMonth();
+                            scope.runIfNotInDigest(scope.triggerChange);
                             break;
                         case 'TY':
-                            ctrl.handleClickSelectThisYear();
-                            scope.$apply();
-                            ctrl.triggerChange();
+                            scope.handleClickSelectThisYear();
+                            scope.runIfNotInDigest(scope.triggerChange);
                             break;
                         case 'LY':
-                            ctrl.handleClickSelectLastYear();
-                            scope.$apply();
-                            ctrl.triggerChange();
+                            scope.handleClickSelectLastYear();
+                            scope.runIfNotInDigest(scope.triggerChange);
                             break;
                         default:
                             break;
                     }
+                }
+
+                scope.runIfNotInDigest = function (operation) {
+                    if (scope.$root != null && !scope.$root.$$phase) { // check if digest already in progress
+                        scope.$apply(); // launch digest;
+                        if (operation && typeof operation === 'function') {
+                            operation();
+                        }
+                    }
+                };
+                element.on('click', function (e) {
+                    var eventKey = e.target.getAttribute('event-key'),
+                        eventParam = e.target.getAttribute('event-param');
+                    scope.actionByKey(eventKey, eventParam, e);
                 });
 
-                ctrl.triggerChange = function triggerChange() {
-                    if (ctrl.mdOnSelect && typeof ctrl.mdOnSelect === 'function') {
-                        ctrl.mdOnSelect();
+                scope.triggerChange = function triggerChange(e) {
+                    if (scope.mdOnSelect) {
+                        scope.mdOnSelect();
                     }
                 };
             }
@@ -115,136 +123,203 @@
 
     mdDateRangePickerCtrl.$inject = ['$scope', '$filter'];
     function mdDateRangePickerCtrl($scope, $filter) {
-        var ctrl = this, NUMBER_OF_MONTH_TO_DISPLAY = 2,
+        var ctrl = $scope, NUMBER_OF_MONTH_TO_DISPLAY = 2,
             SELECTION_TEMPLATES = {
-                'TD': 'Today',
-                'YD': 'Yesterday',
-                'TW': 'This Week',
-                'LW': 'Last Week',
-                'TM': 'This Month',
-                'LM': 'Last Month',
-                'TY': 'This Year',
-                'LY': 'Last Year'
-            }, START_OF_WEEK = 1;
-        this.isMenuContainer = false;
-        this.days = [];
-        this.label = 'Date range picker';
-        this.dates = [];
-        this.dates2 = [];
-        this.firstDayOfWeek = this.firstDayOfWeek || START_OF_WEEK; // Configurable Attribute
-        this.numberOfMonthToDisplay = 2;
-        this.today = new Date();
-        this.dateStart = this.dateStart || null;
-        this.dateStart && this.dateStart.setHours(0, 0, 0, 0);
-        this.dateEnd = this.dateEnd || null;
-        this.dateEnd && this.dateStart.setHours(23, 59, 59, 999);
-        this.firstDayOfMonth = this.dateStart ? new Date(this.dateStart.getFullYear(), this.dateStart.getMonth(), 1) : Date(this.today.getFullYear(), this.today.getMonth(), 1);
-        this.lastDayOfMonth = this.dateStart ? new Date(this.dateStart.getFullYear(), this.dateStart.getMonth() + 1, 0) : Date(this.today.getFullYear(), this.today.getMonth() + 1, 0);
-        this.activeDate = this.dateStart || this.today;
-        this.activeDate2 = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth() + 1, 1);
-        this.activeMonth = this.activeDate.getMonth();
-        this.activeYear = this.activeDate.getFullYear();
-        this.activeMonth2 = this.activeDate2.getMonth();
-        this.activeYear2 = this.activeDate2.getFullYear();
-        this.months = [];
-        this.years = [];
-        this.selectedTemplate = this.selectedTemplate;
+                'TD': getLocalizationVal('Today'),
+                'YD': getLocalizationVal('Yesterday'),
+                'TW': getLocalizationVal('This Week'),
+                'LW': getLocalizationVal('Last Week'),
+                'TM': getLocalizationVal('This Month'),
+                'LM': getLocalizationVal('Last Month'),
+                'TY': getLocalizationVal('This Year'),
+                'LY': getLocalizationVal('Last Year')
+            }, START_OF_WEEK = 1
+        SELECTION_TEMPLATES_CUSTOM = {}
+            ;
+        $scope.isMenuContainer = false;
+        $scope.days = [];
+        $scope.label = 'Date range picker';
+        $scope.dates = [];
+        $scope.dates2 = [];
+        $scope.numberOfMonthToDisplay = 2;
+        $scope.today = new Date();
+        $scope.dateStart && $scope.dateStart.setHours(0, 0, 0, 0);
+        $scope.dateEnd && $scope.dateStart.setHours(23, 59, 59, 999);
+        $scope.firstDayOfMonth = $scope.dateStart ? new Date($scope.dateStart.getFullYear(), $scope.dateStart.getMonth(), 1) : Date($scope.today.getFullYear(), $scope.today.getMonth(), 1);
+        $scope.lastDayOfMonth = $scope.dateStart ? new Date($scope.dateStart.getFullYear(), $scope.dateStart.getMonth() + 1, 0) : Date($scope.today.getFullYear(), $scope.today.getMonth() + 1, 0);
+        $scope.activeDate = $scope.dateStart || $scope.today;
+        $scope.activeDate2 = new Date($scope.activeDate.getFullYear(), $scope.activeDate.getMonth() + 1, 1);
+        $scope.activeMonth = $scope.activeDate.getMonth();
+        $scope.activeYear = $scope.activeDate.getFullYear();
+        $scope.activeMonth2 = $scope.activeDate2.getMonth();
+        $scope.activeYear2 = $scope.activeDate2.getFullYear();
+        $scope.months = [];
+        $scope.years = [];
 
-        this.inCurrentMonth = inCurrentMonth;
-        this.isToday = isToday;
-        this.handleClickDate = handleClickDate;
-        this.inSelectedDateRange = inSelectedDateRange;
-        this.isSelectedStartDate = isSelectedStartDate;
-        this.isSelectedEndDate = isSelectedEndDate;
+        $scope.inCurrentMonth = inCurrentMonth;
+        $scope.isToday = isToday;
+        $scope.handleClickDate = handleClickDate;
+        $scope.inSelectedDateRange = inSelectedDateRange;
+        $scope.isSelectedStartDate = isSelectedStartDate;
+        $scope.isSelectedEndDate = isSelectedEndDate;
 
-        this.updateActiveDate = updateActiveDate;
-        this.selectedDateText = selectedDateText;
-        this.focusToDate = focusToDate;
+        $scope.updateActiveDate = updateActiveDate;
+        $scope.selectedDateText = selectedDateText;
+        $scope.focusToDate = focusToDate;
 
-        this.handleClickNextMonth = handleClickNextMonth;
-        this.handleClickPrevMonth = handleClickPrevMonth;
+        $scope.handleClickNextMonth = handleClickNextMonth;
+        $scope.handleClickPrevMonth = handleClickPrevMonth;
 
-        this.handleClickSelectToday = handleClickSelectToday;
-        this.handleClickSelectYesterday = handleClickSelectYesterday;
-        this.handleClickSelectThisWeek = handleClickSelectThisWeek;
-        this.handleClickSelectLastWeek = handleClickSelectLastWeek;
-        this.handleClickSelectThisMonth = handleClickSelectThisMonth;
-        this.handleClickSelectLastMonth = handleClickSelectLastMonth;
-        this.handleClickSelectThisYear = handleClickSelectThisYear;
-        this.handleClickSelectLastYear = handleClickSelectLastYear;
+        $scope.handleClickSelectToday = handleClickSelectToday;
+        $scope.handleClickSelectYesterday = handleClickSelectYesterday;
+        $scope.handleClickSelectThisWeek = handleClickSelectThisWeek;
+        $scope.handleClickSelectLastWeek = handleClickSelectLastWeek;
+        $scope.handleClickSelectThisMonth = handleClickSelectThisMonth;
+        $scope.handleClickSelectLastMonth = handleClickSelectLastMonth;
+        $scope.handleClickSelectThisYear = handleClickSelectThisYear;
+        $scope.handleClickSelectLastYear = handleClickSelectLastYear;
+
+        $scope.getLocalizationVal = getLocalizationVal;
+        $scope.selectCustomRange = selectCustomRange;
+        $scope.isInMaxRange = isInMaxRange;
+        $scope.selectionTemplate = {};
 
         init();
 
         function init() {
             var mctr = 0;
-            if (ctrl.selectedTemplate) {
-                switch (ctrl.selectedTemplate) {
+            if ($scope.selectedTemplate) {
+                switch ($scope.selectedTemplate) {
                     case 'TD':
-                        ctrl.handleClickSelectToday();
+                        $scope.handleClickSelectToday();
                         break;
                     case 'YD':
-                        ctrl.handleClickSelectYesterday();
+                        $scope.handleClickSelectYesterday();
                         break;
                     case 'TW':
-                        ctrl.handleClickSelectThisWeek();
+                        $scope.handleClickSelectThisWeek();
                         break;
                     case 'LW':
-                        ctrl.handleClickSelectLastWeek();
+                        $scope.handleClickSelectLastWeek();
                         break;
                     case 'TM':
-                        ctrl.handleClickSelectThisMonth();
+                        $scope.handleClickSelectThisMonth();
                         break;
                     case 'LM':
-                        ctrl.handleClickSelectLastMonth();
+                        $scope.handleClickSelectLastMonth();
                         break;
                     case 'TY':
-                        ctrl.handleClickSelectThisYear();
+                        $scope.handleClickSelectThisYear();
                         break;
                     case 'LY':
-                        ctrl.handleClickSelectLastYear();
+                        $scope.handleClickSelectLastYear();
                         break;
                     default:
-                        ctrl.selectedTemplate = '';
-                        ctrl.selectedTemplateName = ctrl.selectedDateText();
-                        ctrl.updateActiveDate();
+                        $scope.selectedTemplate = '';
+                        $scope.selectedTemplateName = $scope.selectedDateText();
                         break;
                 }
+                $scope.updateActiveDate();
             } else {
-                ctrl.selectedTemplate = '';
-                ctrl.selectedTemplateName = ctrl.selectedDateText();
-                ctrl.updateActiveDate();
+                $scope.selectedTemplate = '';
+                $scope.selectedTemplateName = $scope.selectedDateText();
+                $scope.updateActiveDate();
             }
+
+            $scope.$watch('selectedTemplate', function (next, prev) {
+                if (next !== prev && $scope.dateStart && !$scope.inCurrentMonth($scope.dateStart) && !$scope.inCurrentMonth($scope.dateStart, true)) {
+                    $scope.focusToDate($scope.dateStart);
+                }
+            });
+            $scope.$watch('dateStart', function (next, prev) {
+                if (next !== prev && $scope.dateStart && !$scope.inCurrentMonth($scope.dateStart) && !$scope.inCurrentMonth($scope.dateStart, true)) {
+                    $scope.focusToDate($scope.dateStart);
+                }
+            });
+
             /**
              * Generate Days of Week Names
              * Fact: January 1st of 2017 is Sunday
              */
             var w = new Date(2017, 0, 1);
-            ctrl.days = [];
+            $scope.days = [];
             for (mctr = 0; mctr < 7; mctr++) {
-                //add ctrl.firstDayOfWeek to set the first Day of week e.g. 0 = Sunday, 1 = Monday 
-                w.setDate(mctr + 1 + ctrl.firstDayOfWeek);
-                ctrl.days.push({ id: mctr, name: $filter('date')(w, 'EEE') });
+                //add $scope.firstDayOfWeek to set the first Day of week e.g. -1 = Sunday, 0 = Monday 
+                w.setDate(mctr + 1 + getFirstDayOfWeek());
+                $scope.days.push({ id: mctr, name: getLocalizationVal($filter('date')(w, 'EEE')) });
             }
             /**
              * Generate Month Names, Might depend on localization
             */
             var m = new Date();
             m.setDate(1);
-            ctrl.months = [];
+            $scope.months = [];
             for (mctr = 0; mctr < 12; mctr++) {
                 m.setMonth(mctr);
-                ctrl.months.push({ id: mctr, name: $filter('date')(m, 'MMMM') });
+                $scope.months.push({ id: mctr, name: getLocalizationVal($filter('date')(m, 'MMMM')) });
             }
             /**
              * Generate Year Selection
             */
-            var y = ctrl.activeYear, yctr = 0;
-            ctrl.years = [];
+            var y = $scope.activeYear, yctr = 0;
+            $scope.years = [];
             for (yctr = y - 10; yctr < y + 10; yctr++) {
-                ctrl.years.push({ id: yctr, name: yctr })
+                $scope.years.push({ id: yctr, name: getLocalizationVal(yctr) })
             }
+
+            /** 
+             * add custom template to local custom template array 
+            */
+            if ($scope.customTemplates != null) {
+                for (var i = 0; i < $scope.customTemplates.length; i++) {
+                    var currTmpl = $scope.customTemplates[i];
+                    SELECTION_TEMPLATES_CUSTOM[currTmpl.name] = currTmpl;
+                }
+            }
+
+            /**
+         * get the templates to use 
+        */
+            for (var tmplKey in SELECTION_TEMPLATES) {
+                if (SELECTION_TEMPLATES.hasOwnProperty(tmplKey)) {
+                    //check if we have disable templates property 
+                    if ($scope.disableTemplates != null && $scope.disableTemplates != '') {
+                        //if key is not exist in disableTemplates property add it
+                        if ($scope.disableTemplates.indexOf(tmplKey) < 0) {
+                            $scope.selectionTemplate[tmplKey] = SELECTION_TEMPLATES[tmplKey];
+                        }
+                    } else {
+                        $scope.selectionTemplate[tmplKey] = SELECTION_TEMPLATES[tmplKey];
+                    }
+
+                }
+            }
+
+
         }
 
+        function selectCustomRange(tmpltKey, tmpltObj) {
+            $scope.dateStart = tmpltObj.dateStart;
+            $scope.dateEnd = tmpltObj.dateEnd;
+            $scope.selectedTemplate = tmpltKey;
+            $scope.selectedTemplateName = $scope.selectedDateText();
+        }
+        function getLocalizationVal(val) {
+            var ret = null;
+            if ($scope.localizationMap != null && $scope.localizationMap[val] != null) {
+                ret = $scope.localizationMap[val];
+            } else {
+                ret = val;
+            }
+            return ret;
+        }
+
+        function getFirstDayOfWeek() {
+            if ([undefined, null, '', NaN].indexOf($scope.firstDayOfWeek) !== -1) {
+                return START_OF_WEEK;
+            }
+            return $scope.firstDayOfWeek;
+        }
         /**
          * Fill the Calendar Dates
          */
@@ -253,8 +328,8 @@
             var dates = [],
                 monthStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
                 monthEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0),
-                calendarStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1 - (monthStartDate.getDay() - ctrl.firstDayOfWeek)),
-                calendarEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 7 - (monthEndDate.getDay() - ctrl.firstDayOfWeek)),
+                calendarStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1 - (monthStartDate.getDay() == getFirstDayOfWeek() ? 0 : (monthStartDate.getDay() - getFirstDayOfWeek()))),
+                calendarEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 7 - (monthEndDate.getDay() - getFirstDayOfWeek())),
                 calendar = calendarStartDate;
             while (calendar < calendarEndDate) {
                 dates.push(calendar);
@@ -270,7 +345,7 @@
          * date1 > date2 return negative integer
          */
         function getDateDiff(date1, date2) {
-            if(!date1 || !date2) return;
+            if (!date1 || !date2) return;
             var _d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate()),
                 _d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
             return _d2 - _d1;
@@ -279,8 +354,8 @@
         /**
          * return Day Name in a week
          */
-        function getDayName(day, firstDayOfWeek) {
-            var weekday = new Array(7), div = firstDayOfWeek || 0;
+        function getDayName(day) {
+            var weekday = new Array(7), div = getFirstDayOfWeek();
             weekday[0] = "Sun";
             weekday[1] = "Mon";
             weekday[2] = "Tue";
@@ -297,104 +372,132 @@
 
         function inCurrentMonth(date, isSecondMonth) {
             return !isSecondMonth ?
-                date.getMonth() === ctrl.activeMonth :
-                date.getMonth() === ctrl.activeMonth2;
+                date.getMonth() === $scope.activeMonth :
+                date.getMonth() === $scope.activeMonth2;
+        }
+
+        function isInMaxRange(date) {
+            if (!$scope.dateStart) return true;
+            if (getDateDiff($scope.dateStart, $scope.dateEnd) !== 0) return true;
+            var diff = getDateDiff($scope.dateStart, date);
+            return ($scope.maxRange && Math.abs(Math.ceil(diff / (1000 * 3600 * 24))) + 1 <= $scope.maxRange || !$scope.maxRange);
         }
 
         function handleClickDate($event, date) {
             var changed = false;
-            if (getDateDiff(ctrl.dateStart, ctrl.dateEnd) === 0) {
-                if (getDateDiff(ctrl.dateStart, date) > 0) {
-                    ctrl.dateEnd = date;
-                } else {
-                    ctrl.dateStart = date;
+            var shouldConfirm = false;
+            if (getDateDiff($scope.dateStart, $scope.dateEnd) === 0) {
+                if (getDateDiff($scope.dateStart, date) === 0) {
+                    shouldConfirm = true;
+                    changed = true;
+                } else if (!$scope.isDisabledDate || !$scope.isDisabledDate({ $date: date })) {
+                    var diff = getDateDiff($scope.dateStart, date);
+                    if (diff > 0) {
+                        // Check if maxRange
+                        if ($scope.maxRange && Math.abs(Math.ceil(diff / (1000 * 3600 * 24))) + 1 <= $scope.maxRange || !$scope.maxRange) {
+                            $scope.dateEnd = date;
+                            shouldConfirm = true;
+                            changed = true;
+                        }
+                    } else {
+                        // Check if maxRange
+                        if ($scope.maxRange && Math.abs(Math.ceil(diff / (1000 * 3600 * 24))) + 1 <= $scope.maxRange || !$scope.maxRange) {
+                            $scope.dateStart = date;
+                            shouldConfirm = true;
+                            changed = true;
+                        }
+                    }
                 }
-                changed = true;
             } else {
-                ctrl.dateStart = date;
-                ctrl.dateEnd = date;
+                if (!$scope.isDisabledDate || !$scope.isDisabledDate({ $date: date })) {
+                    $scope.dateStart = date;
+                    $scope.dateEnd = date;
+                    changed = true;
+                }
             }
-            ctrl.selectedTemplate = false;
-            ctrl.selectedTemplateName = ctrl.selectedDateText();
-            return changed;
+            if (changed) {
+                $scope.selectedTemplate = false;
+                $scope.selectedTemplateName = $scope.selectedDateText();
+            }
+            return shouldConfirm;
         }
 
         function inSelectedDateRange(date) {
-            return ctrl.dateStart &&  ctrl.dateEnd 
-                ? getDateDiff(ctrl.dateStart, date) >= 0 && 0 <= getDateDiff(date, ctrl.dateEnd) 
+            return $scope.dateStart && $scope.dateEnd
+                ? getDateDiff($scope.dateStart, date) >= 0 && 0 <= getDateDiff(date, $scope.dateEnd)
                 : false;
         }
 
         function updateActiveDate(isSecondMonth) {
-            var d = new Date(this.activeYear, this.activeMonth, 1),
-                d2 = new Date(this.activeYear2, this.activeMonth2, 1);
+            var d = new Date($scope.activeYear, $scope.activeMonth, 1),
+                d2 = new Date($scope.activeYear2, $scope.activeMonth2, 1);
             if (isSecondMonth) {
-                d = new Date(this.activeYear2, this.activeMonth2 - 1, 1);
-                this.activeYear = d.getFullYear();
-                this.activeMonth = d.getMonth();
+                d = new Date($scope.activeYear2, $scope.activeMonth2 - 1, 1);
+                $scope.activeYear = d.getFullYear();
+                $scope.activeMonth = d.getMonth();
             } else {
-                d2 = new Date(this.activeYear, this.activeMonth + 1, 1);
-                this.activeYear2 = d2.getFullYear();
-                this.activeMonth2 = d2.getMonth();
+                d2 = new Date($scope.activeYear, $scope.activeMonth + 1, 1);
+                $scope.activeYear2 = d2.getFullYear();
+                $scope.activeMonth2 = d2.getMonth();
             }
-            ctrl.focusToDate(d);
+            $scope.focusToDate(d);
         }
 
         function handleClickNextMonth($event) {
-            var d = new Date(ctrl.activeDate.getFullYear(), ctrl.activeDate.getMonth() + 1, 1);
-            ctrl.focusToDate(d);
+            var d = new Date($scope.activeDate.getFullYear(), $scope.activeDate.getMonth() + 1, 1);
+            $scope.focusToDate(d);
         }
 
         function handleClickPrevMonth($event) {
-            var d = new Date(ctrl.activeDate.getFullYear(), ctrl.activeDate.getMonth() - 1, 1);
-            ctrl.focusToDate(d);
+            var d = new Date($scope.activeDate.getFullYear(), $scope.activeDate.getMonth() - 1, 1);
+            $scope.focusToDate(d);
         }
 
         function handleClickSelectToday() {
             var d = new Date(), d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
-            ctrl.dateStart = d1;
-            ctrl.dateEnd = d1;
-            ctrl.selectedTemplate = 'TD';
-            ctrl.selectedTemplateName = ctrl.selectedDateText();
-            ctrl.focusToDate(d);
+            $scope.dateStart = d1;
+            $scope.dateEnd = d1;
+            $scope.selectedTemplate = 'TD';
+            $scope.selectedTemplateName = $scope.selectedDateText();
+            //$scope.focusToDate(d);
         }
 
         function handleClickSelectYesterday() {
             var d = new Date(), d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - 1);
 
-            ctrl.dateStart = d1;
-            ctrl.dateEnd = d1;
-            ctrl.selectedTemplate = 'YD';
-            ctrl.selectedTemplateName = ctrl.selectedDateText();
-            ctrl.focusToDate(d);
+            $scope.dateStart = d1;
+            $scope.dateEnd = d1;
+            $scope.selectedTemplate = 'YD';
+            $scope.selectedTemplateName = $scope.selectedDateText();
+            //$scope.focusToDate(d);
         }
 
 
         function handleClickSelectThisWeek() {
             var p = new Date(),
                 d = new Date(p.getFullYear(), p.getMonth(), p.getDate()),
-                d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() - ctrl.firstDayOfWeek)),
-                d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (6 - d.getDay() + ctrl.firstDayOfWeek));
+                d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() - getFirstDayOfWeek())),
+                d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (6 - d.getDay() + getFirstDayOfWeek()));
 
-            ctrl.dateStart = d1;
-            ctrl.dateEnd = d2;
-            ctrl.selectedTemplate = 'TW';
-            ctrl.selectedTemplateName = ctrl.selectedDateText();
-            ctrl.focusToDate(d);
+            $scope.dateStart = d1;
+            $scope.dateEnd = d2;
+            $scope.selectedTemplate = 'TW';
+            $scope.selectedTemplateName = $scope.selectedDateText();
+            //$scope.focusToDate(d);
         }
 
         function handleClickSelectLastWeek() {
             var p = new Date(),
                 d = new Date(p.getFullYear(), p.getMonth(), p.getDate() - 7),
-                d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() - ctrl.firstDayOfWeek)),
-                d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (6 - d.getDay() + ctrl.firstDayOfWeek));
+                d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() - getFirstDayOfWeek())),
+                d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (6 - d.getDay() + getFirstDayOfWeek()));
 
-            ctrl.dateStart = d1;
-            ctrl.dateEnd = d2;
-            ctrl.selectedTemplate = 'LW';
-            ctrl.selectedTemplateName = ctrl.selectedDateText();
-            ctrl.focusToDate(d);
+            $scope.dateStart = d1;
+            $scope.dateEnd = d2;
+            $scope.selectedTemplate = 'LW';
+            $scope.selectedTemplateName = $scope.selectedDateText();
+            //$scope.focusToDate(d);
         }
 
 
@@ -403,11 +506,11 @@
                 d1 = new Date(d.getFullYear(), d.getMonth(), 1),
                 d2 = new Date(d.getFullYear(), d.getMonth() + 1, 0);
 
-            ctrl.dateStart = d1;
-            ctrl.dateEnd = d2;
-            ctrl.selectedTemplate = 'TM';
-            ctrl.selectedTemplateName = ctrl.selectedDateText();
-            ctrl.focusToDate(d);
+            $scope.dateStart = d1;
+            $scope.dateEnd = d2;
+            $scope.selectedTemplate = 'TM';
+            $scope.selectedTemplateName = $scope.selectedDateText();
+            //$scope.focusToDate(d);
         }
 
         function handleClickSelectLastMonth() {
@@ -416,11 +519,11 @@
                 d1 = new Date(d.getFullYear(), d.getMonth(), 1),
                 d2 = new Date(d.getFullYear(), d.getMonth() + 1, 0);
 
-            ctrl.dateStart = d1;
-            ctrl.dateEnd = d2;
-            ctrl.selectedTemplate = 'LM';
-            ctrl.selectedTemplateName = ctrl.selectedDateText();
-            ctrl.focusToDate(d);
+            $scope.dateStart = d1;
+            $scope.dateEnd = d2;
+            $scope.selectedTemplate = 'LM';
+            $scope.selectedTemplateName = $scope.selectedDateText();
+            //$scope.focusToDate(d);
         }
 
         function handleClickSelectThisYear() {
@@ -428,11 +531,11 @@
                 d1 = new Date(d.getFullYear(), 0, 1),
                 d2 = new Date(d.getFullYear(), 11, 31);
 
-            ctrl.dateStart = d1;
-            ctrl.dateEnd = d2;
-            ctrl.selectedTemplate = 'TY';
-            ctrl.selectedTemplateName = ctrl.selectedDateText();
-            ctrl.focusToDate(d1);
+            $scope.dateStart = d1;
+            $scope.dateEnd = d2;
+            $scope.selectedTemplate = 'TY';
+            $scope.selectedTemplateName = $scope.selectedDateText();
+            //$scope.focusToDate(d1);
         }
 
         function handleClickSelectLastYear() {
@@ -440,19 +543,19 @@
                 d1 = new Date(d.getFullYear() - 1, 0, 1),
                 d2 = new Date(d.getFullYear() - 1, 11, 31);
 
-            ctrl.dateStart = d1;
-            ctrl.dateEnd = d2;
-            ctrl.selectedTemplate = 'LY';
-            ctrl.selectedTemplateName = ctrl.selectedDateText();
-            ctrl.focusToDate(d1);
+            $scope.dateStart = d1;
+            $scope.dateEnd = d2;
+            $scope.selectedTemplate = 'LY';
+            $scope.selectedTemplateName = $scope.selectedDateText();
+            //$scope.focusToDate(d1);
         }
 
         function isSelectedStartDate(date) {
-            return getDateDiff(ctrl.dateStart, date) === 0;
+            return getDateDiff($scope.dateStart, date) === 0;
         }
 
         function isSelectedEndDate(date) {
-            return getDateDiff(ctrl.dateEnd, date) === 0;
+            return getDateDiff($scope.dateEnd, date) === 0;
         }
 
         function isToday(date) {
@@ -460,38 +563,40 @@
         }
 
         function selectedDateText() {
-            if(!ctrl.dateStart || !ctrl.dateEnd){
+            if (!$scope.dateStart || !$scope.dateEnd) {
                 return '';
-            }else if (!ctrl.selectedTemplate) {
-                if (getDateDiff(ctrl.dateStart, ctrl.dateEnd) === 0) {
-                    return $filter('date')(ctrl.dateStart, 'dd MMM yyyy');
+            } else if (!$scope.selectedTemplate) {
+                if (getDateDiff($scope.dateStart, $scope.dateEnd) === 0) {
+                    return $filter('date')($scope.dateStart, 'dd MMM yyyy');
                 } else {
                     return $filter('date')(
-                        ctrl.dateStart,
-                        'dd' + (ctrl.dateStart.getMonth() !== ctrl.dateEnd.getMonth() || ctrl.dateStart.getFullYear() !== ctrl.dateEnd.getFullYear() ? ' MMM' : '') + (ctrl.dateStart.getFullYear() !== ctrl.dateEnd.getFullYear() ? ' yyyy' : '')
+                        $scope.dateStart,
+                        'dd' + ($scope.dateStart.getMonth() !== $scope.dateEnd.getMonth() || $scope.dateStart.getFullYear() !== $scope.dateEnd.getFullYear() ? ' MMM' : '') + ($scope.dateStart.getFullYear() !== $scope.dateEnd.getFullYear() ? ' yyyy' : '')
                     ) + ' - ' +
                         $filter('date')(
-                            ctrl.dateEnd,
+                            $scope.dateEnd,
                             'dd MMM yyyy'
                         );
                 }
+            } else if (SELECTION_TEMPLATES_CUSTOM != null && SELECTION_TEMPLATES_CUSTOM[$scope.selectedTemplate] != null) {
+                return SELECTION_TEMPLATES_CUSTOM[$scope.selectedTemplate].name;
             } else {
-                return SELECTION_TEMPLATES[ctrl.selectedTemplate];
+                return SELECTION_TEMPLATES[$scope.selectedTemplate];
             }
         }
 
         function focusToDate(d) {
             var d2 = new Date(d.getFullYear(), d.getMonth() + 1, 1);
-            ctrl.activeDate = d;
-            ctrl.activeMonth = d.getMonth();
-            ctrl.activeYear = d.getFullYear();
+            $scope.activeDate = d;
+            $scope.activeMonth = d.getMonth();
+            $scope.activeYear = d.getFullYear();
 
-            ctrl.activeDate2 = d2;
-            ctrl.activeMonth2 = d2.getMonth();
-            ctrl.activeYear2 = d2.getFullYear();
+            $scope.activeDate2 = d2;
+            $scope.activeMonth2 = d2.getMonth();
+            $scope.activeYear2 = d2.getFullYear();
 
-            ctrl.dates = fillDateGrid(d);
-            ctrl.dates2 = fillDateGrid(d2);
+            $scope.dates = fillDateGrid(d);
+            $scope.dates2 = fillDateGrid(d2);
         }
     }
 
@@ -499,68 +604,56 @@
         return {
             scope: {
                 ngModel: '=ngModel',
+                autoConfirm: '=autoConfirm',
+                ngDisabled: '=ngDisabled',
                 showTemplate: '=',
-                autoConfirm: '=?',
                 placeholder: '@',
                 firstDayOfWeek: '@'
             },
-            template: ['<md-menu>',
-                '<span class="md-select-value" ng-click="$mdOpenMenu($event)">',
-                '  <span>{{ctrl.ngModel.selectedTemplateName || ctrl.placeholder}}</span>',
+            template: ['<md-menu ng-disabled="ngDisabled">',
+                '<span class="md-select-value" ng-click="!ngDisabled && (($mdMenu && $mdMenu.open) ? $mdMenu.open($event) : $mdOpenMenu($event))">',
+                '  <span>{{ngModel.selectedTemplateName || placeholder}}</span>',
                 '  <span class="md-select-icon" aria-hidden="true"></span>',
                 '</span>',
-                '<md-menu-content class="md-custom-menu-content" style="max-height: none; height: auto; padding: 0;" width="4">',
-                '    <span style="text-align: left; padding: 12px 20px 0 20px; text-transform: uppercase" disabled>{{ctrl.selectedTemplateName}}</span>',
-                '    <md-date-range-picker show-template="true" first-day-of-week="ctrl.firstDayOfWeek" ',
-                '     md-on-select="ctrl.autoConfirm && ctrl.ok()" ',
-                '     date-start="ctrl.dateStart" ',
-                '     date-end="ctrl.dateEnd" ',
-                '     show-template="ctrl.showTemplate" ',
-                '     selected-template="ctrl.selectedTemplate" ',
-                '     selected-template-name="ctrl.selectedTemplateName"></md-date-range-picker>',
-                '<p ng-if="!ctrl.autoConfirm" layout="row" layout-align="end center">',
-                '<md-button ng-click="ctrl.cancel()">Cancel</md-button>',
-                '<md-button class="md-raised md-primary" ng-click="ctrl.ok()">Ok</md-button>',
+                '<md-menu-content class="md-custom-menu-content" style="max-height: none!important; height: auto!important; padding: 0!important;">',
+                '    <span style="text-align: left; padding: 12px 20px 0 20px" disabled>{{ngModel.selectedTemplateName || placeholder}}</span>',
+                '    <md-date-range-picker show-template="true" first-day-of-week="firstDayOfWeek" ',
+                '     md-on-select="autoConfirm && ok()" ',
+                '     date-start="ngModel.dateStart" ',
+                '     date-end="ngModel.dateEnd" ',
+                '     show-template="ngModel.showTemplate" ',
+                '     selected-template="ngModel.selectedTemplate" ',
+                '     localization-map="ngModel.localizationMap" ',
+                '     custom-templates="ngModel.customTemplates" ',
+                '     disable-templates="{{ngModel.disableTemplates}}" ',
+                '     is-disabled-date="ngModel.isDisabledDate({ $date: $date })" ',
+                '     max-range="ngModel.maxRange" ',
+                '     one-panel="ngModel.onePanel" ',
+                '     selected-template-name="ngModel.selectedTemplateName"></md-date-range-picker>',
+                '<p ng-if="!autoConfirm" layout="row" layout-align="end center">',
+                '<md-button ng-if="ngModel.showClear" class="md-raised" ng-click="clear()">{{getLocalizationVal("Clear")}}</md-button>',
+                '<md-button class="md-raised md-primary" ng-click="ok()">{{getLocalizationVal("Ok")}}</md-button>',
                 '</p>',
                 '</md-menu-content>',
                 '</md-menu>'].join(''),
-            controllerAs: 'ctrl',
-            bindToController: true,
             controller: ['$scope', '$mdMenu', function ($scope, $mdMenu) {
-                var self = this;
-                /**
-                 * Copy Model so that model will only update if dateEnd modified
-                 */
-                $scope.$watch(function () {
-                    return JSON.stringify(self.ngModel);
-                }, function (newval) {
-                    if(self.ngModel){
-                        self.selectedTemplateName = self.ngModel.selectedTemplateName;
-                        self.selectedTemplate = self.ngModel.selectedTemplate;
-                        self.dateStart = self.ngModel.dateStart;
-                        self.dateEnd = self.ngModel.dateEnd;
-                    }
-                });
-                if(self.ngModel){
-                    self.selectedTemplateName = self.ngModel.selectedTemplateName;
-                    self.selectedTemplate = self.ngModel.selectedTemplate;
-                    self.dateStart = self.ngModel.dateStart;
-                    self.dateEnd = self.ngModel.dateEnd;
-                    self.firstDayOfWeek = self.firstDayOfWeek || 1;
-                }
-                self.ok = function ok() {
-                    if(self.ngModel){
-                        self.ngModel.selectedTemplateName = self.selectedTemplateName;
-                        self.ngModel.selectedTemplate = self.selectedTemplate;
-                        self.ngModel.dateStart = self.dateStart;
-                        self.ngModel.dateEnd = self.dateEnd;
-                        self.ngModel.dateStart.setHours(0, 0, 0, 0);
-                        self.ngModel.dateEnd.setHours(23, 59, 59, 999);
-                    }
+                $scope.ok = function ok() {
                     $mdMenu.hide();
                 }
-                self.cancel = function cancel() {
-                    $mdMenu.hide();
+                $scope.clear = function clear() {
+                    $scope.ngModel.selectedTemplateName = '';
+                    $scope.ngModel.selectedTemplate = null;
+                    $scope.ngModel.dateStart = null;
+                    $scope.ngModel.dateEnd = null;
+                }
+                $scope.getLocalizationVal = function getLocalizationVal(val) {
+                    var ret = null;
+                    if ($scope.ngModel && $scope.ngModel.localizationMap != null && $scope.ngModel.localizationMap[val] != null) {
+                        ret = $scope.ngModel.localizationMap[val];
+                    } else {
+                        ret = val;
+                    }
+                    return ret;
                 }
             }]
         };
@@ -579,39 +672,60 @@
                         mdDateRangePickerServiceModel: angular.copy(config.model)
                     },
                     controller: ['$scope', 'mdDateRangePickerServiceModel', function ($scope, mdDateRangePickerServiceModel) {
-                        var vm = this;
-                        vm.model = mdDateRangePickerServiceModel || {};
-                        vm.model.selectedTemplateName = vm.model.selectedTemplateName || '';
-                        vm.ok = function () {
-                            vm.model.dateStart.setHours(0, 0, 0, 0);
-                            vm.model.dateEnd.setHours(23, 59, 59, 999);
-                            $mdDialog.hide(vm.model);
+                        $scope.model = mdDateRangePickerServiceModel || {};
+                        $scope.model.selectedTemplateName = $scope.model.selectedTemplateName || '';
+                        $scope.ok = function () {
+                            $scope.model.dateStart && $scope.model.dateStart.setHours(0, 0, 0, 0);
+                            $scope.model.dateEnd && $scope.model.dateEnd.setHours(23, 59, 59, 999);
+                            $mdDialog.hide($scope.model);
                         }
-                        vm.cancel = function () {
+                        $scope.cancel = function () {
                             $mdDialog.hide(false);
                         }
+                        $scope.clear = function clear() {
+                            $scope.model.selectedTemplateName = '';
+                            $scope.model.selectedTemplate = null;
+                            $scope.model.dateStart = null;
+                            $scope.model.dateEnd = null;
+                        }
+                        $scope.getLocalizationVal = function getLocalizationVal(val) {
+                            var ret = null;
+                            if ($scope.model && $scope.model.localizationMap != null && $scope.model.localizationMap[val] != null) {
+                                ret = $scope.model.localizationMap[val];
+                            } else {
+                                ret = val;
+                            }
+                            return ret;
+                        }
                     }],
-                    controllerAs: 'vm',
                     template: ['<md-dialog aria-label="Date Range Picker">',
                         '<md-toolbar class="md-primary" layout="row" layout-align="start center">',
                         '<md-button aria-label="Date Range Picker" class="md-icon-button" aria-hidden="true" ng-disabled="true">',
                         '<md-icon md-svg-icon="data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkZGRkZGIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik05IDExSDd2Mmgydi0yem00IDBoLTJ2Mmgydi0yem00IDBoLTJ2Mmgydi0yem0yLTdoLTFWMmgtMnYySDhWMkg2djJINWMtMS4xMSAwLTEuOTkuOS0xLjk5IDJMMyAyMGMwIDEuMS44OSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMlY2YzAtMS4xLS45LTItMi0yem0wIDE2SDVWOWgxNHYxMXoiLz4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KPC9zdmc+"></md-icon>',
                         '</md-button>',
-                        '<span class="md-toolbar-tools">{{vm.model.selectedTemplateName}}</span>',
+                        '<span class="md-toolbar-tools">{{model.selectedTemplateName}}</span>',
                         '</md-toolbar>',
                         '<md-dialog-content>',
                         '<md-date-range-picker ',
-                        'date-start="vm.model.dateStart" ',
-                        'date-end="vm.model.dateEnd" ',
-                        'show-template="vm.model.showTemplate" ',
-                        'selected-template="vm.model.selectedTemplate" ',
-                        'selected-template-name="vm.model.selectedTemplateName"',
+                        'date-start="model.dateStart" ',
+                        'date-end="model.dateEnd" ',
+                        'show-template="model.showTemplate" ',
+                        'selected-template="model.selectedTemplate" ',
+                        'selected-template-name="model.selectedTemplateName" ',
+                        'first-day-of-week="firstDayOfWeek || model.firstDayOfWeek" ',
+                        'localization-map="model.localizationMap" ',
+                        'custom-templates="model.customTemplates" ',
+                        'disable-templates="{{model.disableTemplates}}" ',
+                        'is-disabled-date="model.isDisabledDate({ $date: $date })" ',
+                        'max-range="model.maxRange" ',
+                        'one-panel="model.onePanel" ',
                         '>',
                         '</md-date-range-picker>',
                         '</md-dialog-content>',
                         '<md-dialog-actions layout="row" layout-align="end center">',
-                        '<md-button ng-click="vm.cancel()">Cancel</md-button>',
-                        '<md-button class="md-raised md-primary" ng-click="vm.ok()">Ok</md-button>',
+                        '<md-button ng-click="cancel()">{{getLocalizationVal("Cancel")}}</md-button>',
+                        '<md-button class="md-raised" ng-click="clear()">{{getLocalizationVal("Clear")}}</md-button>',
+                        '<md-button class="md-raised md-primary" ng-click="ok()">{{getLocalizationVal("Ok")}}</md-button>',
                         '</md-dialog-actions>',
                         '</md-dialog>'].join(''),
                     parent: angular.element(document.body),
@@ -628,4 +742,4 @@
         }
     }
 
-} (window, angular));
+}(window, angular));

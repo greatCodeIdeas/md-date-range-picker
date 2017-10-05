@@ -1,6 +1,6 @@
 {
   "name": "md-date-range-picker",
-  "version": "0.2.3",
+  "version": "0.6.2",
   "description": "Angular Material Date Range Picker",
   "main": "./dist/md-date-range-picker.js",
   "scripts": {
@@ -19,18 +19,18 @@
   "author": "Roel Barreto <greatcodeideas@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "clean-css": "^3.4.19",
-    "express": "^4.14.0",
+    "clean-css": "3.4.19",
+    "express": "4.14.0",
     "fs": "0.0.1-security",
-    "html-minifier": "^3.0.3",
-    "rimraf": "^2.5.4",
-    "uglify-js": "^1.3.5"
+    "html-minifier": "3.0.3",
+    "rimraf": "2.5.4",
+    "uglify-js": "1.3.5"
   },
   "dependencies": {
-    "angular": "~1.5.8",
-    "angular-animate": "~1.5.8",
-    "angular-aria": "~1.5.8",
-    "angular-material": "~1.1.0",
-    "angular-messages": "~1.5.8"
+    "angular": "^1.5.8",
+    "angular-animate": "^1.5.8",
+    "angular-aria": "^1.5.8",
+    "angular-material": "^1.1.0",
+    "angular-messages": "^1.5.8"
   }
 }

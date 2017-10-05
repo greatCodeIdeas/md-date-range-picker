@@ -4,6 +4,8 @@ A simple Angular Date range picker with material theme
 
 ## ussage/code example 
 
+[![NPM](https://nodei.co/npm/md-date-range-picker.png)](https://npmjs.org/package/md-date-range-picker)
+
 - install using npm packages
 - `npm install md-date-range-picker`
 - install using bower
@@ -31,7 +33,12 @@ html
       date-end="selectedRange.dateEnd"
       selected-template-name="selectedRange.selectedTemplateName"
       selected-template="selectedRange.selectedTemplate"
-      show-template="true"
+      show-template="false"
+      first-day-of-week="0"
+      localization-map="mdLocalizationMap"
+      custom-templates="mdCustomTemplates"
+      disable-templates="TW,LW"
+      is-disabled-date="isFuture($date)"
     ></md-date-range-picker>
   </div>
 </body>
@@ -40,6 +47,22 @@ js
 ```javascript
 angular.module('demo.app', ['ngMaterial', 'ngMaterialDateRangePicker'])
     .controller('ctrl', function($scope, $mdDateRangePicker) {
+        var tmpToday = new Date();
+       $scope.mdCustomTemplates = [
+            {   name:"Last 3 Months",
+                dateStart: new Date((new Date()).setMonth(tmpToday.getMonth() - 3)),
+                dateEnd : new Date()
+            },
+            {
+                name:"Last 6 Months",
+                dateStart: new Date((new Date()).setMonth(tmpToday.getMonth() - 6)),
+                dateEnd : new Date()
+            }
+        ];
+        $scope.mdLocalizationMap =  {
+            'Mon':'Mon*',
+            'This Week':'Current Week',
+        };
         $scope.selectedRange = {
             selectedTemplate: 'TW',
             selectedTemplateName: 'This Week',
@@ -67,6 +90,9 @@ angular.module('demo.app', ['ngMaterial', 'ngMaterialDateRangePicker'])
             $scope.selectedRange.selectedTemplateName = null;
             $scope.selectedRange.dateStart = null;
             $scope.selectedRange.dateEnd = null;
+        }
+        $scope.isFuture = function($date) {
+          return $date.getTime() < new Date().getTime();
         }
     });
 ```
