@@ -330,10 +330,13 @@
                 monthEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0),
                 calendarStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1 - (monthStartDate.getDay() == getFirstDayOfWeek() ? 0 : (monthStartDate.getDay() - getFirstDayOfWeek()))),
                 calendarEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 7 - (monthEndDate.getDay() - getFirstDayOfWeek())),
-                calendar = calendarStartDate;
+                calendar = calendarStartDate,
+                ctr = 0;
             while (calendar < calendarEndDate) {
                 dates.push(calendar);
                 calendar = new Date(calendar.getFullYear(), calendar.getMonth(), calendar.getDate() + 1);
+                ctr++;
+                if (ctr >= 42) break;
             }
             return dates;
         }
