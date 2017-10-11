@@ -1,0 +1,58 @@
+<div layout="row" flex>
+    <div style="width: 300px">
+      <div>
+        <h2>Picker</h2>
+        <md-date-range ng-model="pickerModel"></md-date-range>
+      </div>
+      <div>
+        <h2>Auto Confirm</h2>
+        <md-date-range ng-model="pickerModel" auto-confirm="true"></md-date-range>
+      </div>
+      <div>
+        <h2>One Panel</h2>
+        <md-date-range ng-model="pickerModel" one-panel="true" auto-confirm="true" show-template="false"></md-date-range>
+      </div>
+    </div>
+    <div layout="column" style="width: 380px">
+      <h2>Bindings</h2>
+      <code flex>
+        <table style="text-align: left" cellspacing="10">
+          <tr>
+            <th>Property</th>
+            <th>Value</th>
+          </tr>
+          <tr>
+            <td>selectedTemplate</td>
+            <td>{{pickerModel.selectedTemplate}}</td>
+          </tr>
+          <tr>
+            <td>selectedTemplateName</td>
+            <td>{{pickerModel.selectedTemplateName}}</td>
+          </tr>
+          <tr>
+            <td>dateStart</td>
+            <td>{{pickerModel.dateStart | date : 'medium'}}</td>
+          </tr>
+          <tr>
+            <td>dateEnd</td>
+            <td>{{pickerModel.dateEnd | date : 'medium'}}</td>
+          </tr>
+          <tr>
+            <td>firstDayOfWeek</td>
+            <td>1 Default</td>
+          </tr>
+        </table>
+      </code> 
+    </div>
+    <div layout="column" flex>
+    <h2>Html</h2>
+    <textarea readonly flex style="font-family: Lucida Console, Monaco, monospace">
+<md-date-range
+  ng-model="pickerModel"
+  auto-confirm="true"
+  show-template="false"
+  one-panel="true">
+</md-date-range>
+    </textarea>
+  </div>
+  </div>

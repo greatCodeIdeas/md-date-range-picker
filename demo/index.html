@@ -1,4 +1,4 @@
-<html lang="en">
+<html lang="en" ng-app="demo.app">
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,43 +7,33 @@
   <link rel="stylesheet" href="./md-date-range-picker.css">
 </head>
 
-<body ng-app="demo.app" ng-cloak>
-  <div ng-controller="ctrl">
-    <h1>{{'2016-09-26T14:47:56Z' | date: 'medium'}}</h1>
-    <md-button class="md-raised md-primary" ng-click="pick($event, false)">Pick A Date Range</md-button>
-    <md-button class="md-raised md-primary" ng-click="pick($event, true)">Pick A Date Range With Template</md-button>
-    <md-button class="md-raised md-primary" ng-click="clear($event)">Clear Range</md-button>
-    <div layout layout-padding>
-      <div>
-        <div>Dropdown Picker - With Ok and Clear Button</div>
-        <md-date-range ng-model="selectedRange" placeholder="Select Date Range"></md-date-range>
-      </div>
-      <div>
-        <div>Dropdown Picker - With Auto Close</div>
-        <md-date-range auto-confirm="true" ng-model="selectedRange" placeholder="Select Date Range"></md-date-range>
-      </div>
-    </div>
-    <h2>Selected Date Range: {{selectedRange.dateStart | date}} - {{selectedRange.dateEnd | date}}</h2>
-    <h2>Selected Date Template:{{selectedRange.selectedTemplateName}} - {{selectedRange.selectedTemplate}}</h2>
-    <div layout layout-margin>
-      <div>
-        <h2>One panel with maxRange = 7</h2>
-        <md-date-range-picker md-on-select="onSelect()" date-start="selectedRange.dateStart" date-end="selectedRange.dateEnd" selected-template-name="selectedRange.selectedTemplateName"
-          selected-template="selectedRange.selectedTemplate" show-template="true" first-day-of-week="0" localization-map="mdLocalizationMap"
-          max-range="7" one-panel="true"></md-date-range-picker>
-      </div>
-      <div>
-        <h2>Disabled future Dates</h2>
-        <md-date-range-picker md-on-select="onSelect()" date-start="selectedRange.dateStart" date-end="selectedRange.dateEnd" selected-template-name="selectedRange.selectedTemplateName"
-          selected-template="selectedRange.selectedTemplate" show-template="true" first-day-of-week="0" one-panel="true" is-disabled-date="isDisabledDate($date)"></md-date-range-picker>
-      </div>
-      <div>
-        <h2>md-date-range-picker with custom template disabled weekend</h2>
-        <md-date-range-picker md-on-select="onSelect()" date-start="selectedRange.dateStart" date-end="selectedRange.dateEnd" selected-template-name="selectedRange.selectedTemplateName"
-          selected-template="selectedRange.selectedTemplate" show-template="true" first-day-of-week="0" localization-map="mdLocalizationMap"
-          custom-templates="mdCustomTemplates" is-disabled-date="isDisabledWeekend($date)" disable-templates="TW,LW"></md-date-range-picker>
-      </div>
-    </div>
+<body ng-cloak layout="row" ng-controller="ctrl">
+  <div style="width: 270px" layout="column">
+    <md-list>
+      <md-subheader>Demo</md-subheader>
+      <md-list-item ng-click="page = 'calendar'">
+        <p>Calendar</p>
+        <span ng-if="page == 'calendar'">></span>
+      </md-list-item>
+      <md-list-item ng-click="page = 'picker'">
+        <p>Picker</p>
+        <span ng-if="page == 'picker'">></span>
+      </md-list-item>
+      <md-list-item ng-click="page = 'service'">
+        <p>Service</p>
+        <span ng-if="page == 'service'">></span>
+      </md-list-item>
+      <md-list-item ng-click="page = 'disabled-dates'">
+        <p>Disabled Dates</p>
+        <span ng-if="page == 'disabled-dates'">></span>
+      </md-list-item>
+    </md-list>
+    <md-button class="md-primary md-raised" ng-click="clearAll()">Clear All</md-button>
+  </div>
+  <div flex layout="column">
+    <md-content class="md-padding" layout flex>
+      <div ng-include="page+'.html'" flex></div>
+    </md-content>
   </div>
   <!-- Angular Material requires Angular.js Libraries -->
   <script src="./angular/angular.js"></script>
@@ -63,69 +53,30 @@
      * You must include the dependency on 'ngMaterial' 
      */
     angular.module('demo.app', ['ngMaterial', 'ngMaterialDateRangePicker']).controller('ctrl', function ($scope, $mdDateRangePicker) {
-      var tmpToday = new Date();
-      $scope.mdCustomTemplates = [
-        {
-          name: "Last 3 Months",
-          dateStart: new Date((new Date()).setMonth(tmpToday.getMonth() - 3)),
-          dateEnd: new Date()
-        },
-        {
-          name: "Last 6 Months",
-          dateStart: new Date((new Date()).setMonth(tmpToday.getMonth() - 6)),
-          dateEnd: new Date()
-        }
-      ];
-      $scope.mdLocalizationMap = {
-        'Mon': 'Mon*',
-        'This Week': 'Current Week',
-      };
-      var tmpToday = new Date();
-      $scope.mdCustomTemplates = [
-        {
-          name: "Last 3 Months",
-          dateStart: new Date((new Date()).setMonth(tmpToday.getMonth() - 3)),
-          dateEnd: new Date()
-        },
-        {
-          name: "Last 6 Months",
-          dateStart: new Date((new Date()).setMonth(tmpToday.getMonth() - 6)),
-          dateEnd: new Date()
-        }
-      ];
-      $scope.selectedRange = {
-        selectedTemplate: 'TW',
-        selectedTemplateName: 'This Week',
-        dateStart: null,
-        dateEnd: null,
-        showTemplate: false,
-        fullscreen: false,
-        firstDayOfWeek: 0,
-        localizationMap: $scope.mdLocalizationMap,
-        customTemplates: $scope.mdCustomTemplates,
-        disableTemplates: "TW,LW",
-        showClear: true,
-      };
+      $scope.page = 'calendar';
 
-      $scope.onSelect = function (scope) { console.log($scope.selectedRange.selectedTemplateName); return $scope.selectedRange.selectedTemplateName; };
-      $scope.pick = function ($event, showTemplate) {
-        console.log('Button Fired!');
-        $scope.selectedRange.showTemplate = showTemplate;
-        $mdDateRangePicker.show({ targetEvent: $event, model: $scope.selectedRange }).then(function (result) {
-          if (result) $scope.selectedRange = result;
-        })
-      };
-      $scope.clear = function () {
-        $scope.selectedRange.selectedTemplate = null;
-        $scope.selectedRange.selectedTemplateName = null;
-        $scope.selectedRange.dateStart = null;
-        $scope.selectedRange.dateEnd = null;
+      $scope.calendarModel = { selectedTemplate: 'TW' };
+      $scope.pickerModel = { selectedTemplate: 'TW' };
+      $scope.serviceModel = {};
+
+      $scope.selectDateRange = function () {
+        $mdDateRangePicker.show({
+          model: $scope.serviceModel,
+        }).then(function (result) {
+          $scope.serviceModel = result;
+        }).catch(function () {
+          console.log('Cancelled');
+        });
       }
-      $scope.isDisabledDate = function ($date) {
-        return $date > new Date();
+
+      $scope.isDisabledDate = function(d) {
+        return d.getDay() === 0 ||  d.getDay() === 6;
       }
-      $scope.isDisabledWeekend = function ($date) {
-        return [0, 6, 7].indexOf($date.getDay()) > -1;
+
+      $scope.clearAll = function () {
+        $scope.calendarModel = { dateStart: null };
+        $scope.pickerModel = { dateStart: null };
+        $scope.serviceModel = { dateStart: null };
       }
     });
   </script>

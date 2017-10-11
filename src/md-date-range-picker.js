@@ -328,15 +328,27 @@
             var dates = [],
                 monthStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
                 monthEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0),
-                calendarStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1 - (monthStartDate.getDay() == getFirstDayOfWeek() ? 0 : (monthStartDate.getDay() - getFirstDayOfWeek()))),
-                calendarEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 7 - (monthEndDate.getDay() - getFirstDayOfWeek())),
-                calendar = calendarStartDate,
-                ctr = 0;
-            while (calendar < calendarEndDate) {
-                dates.push(calendar);
-                calendar = new Date(calendar.getFullYear(), calendar.getMonth(), calendar.getDate() + 1);
-                ctr++;
-                if (ctr >= 42) break;
+                firstDay = getFirstDayOfWeek(),
+                ctr, day;
+            
+            for(ctr=1; ctr <= monthEndDate.getDate(); ctr++){
+                dates.push(new Date(currentDate.getFullYear(), currentDate.getMonth(), ctr));
+            }
+
+            day = dates[0].getDay();
+            ctr = 0;
+            while(day !== firstDay){
+              dates.unshift(new Date(currentDate.getFullYear(), currentDate.getMonth(), ctr));
+              day = day <= 0 ? 6 : day-1;
+              ctr--;
+            }
+
+            day = (dates[dates.length-1].getDay()+1) % 7;
+            ctr = 1;
+            while(day !== firstDay){
+              dates.push(new Date(currentDate.getFullYear(), currentDate.getMonth()+1, ctr));
+              day = (day+1) % 7;
+              ctr++
             }
             return dates;
         }
@@ -518,10 +530,10 @@
 
         function handleClickSelectLastMonth() {
             var p = new Date(),
-                d = new Date(p.getFullYear(), p.getMonth() - 1, p.getDate()),
+                d = new Date(p.getFullYear(), p.getMonth(), 0),
                 d1 = new Date(d.getFullYear(), d.getMonth(), 1),
                 d2 = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-
+                
             $scope.dateStart = d1;
             $scope.dateEnd = d2;
             $scope.selectedTemplate = 'LM';
@@ -611,6 +623,13 @@
                 ngDisabled: '=ngDisabled',
                 showTemplate: '=',
                 placeholder: '@',
+                isDisabledDate: '&',
+                localizationMap: '=?',
+                customTemplates: '=?',
+                disableTemplates: '@',
+                mdOnSelect: '&?',
+                onePanel: '=?',
+                maxRange: '=?',
                 firstDayOfWeek: '@'
             },
             template: ['<md-menu ng-disabled="ngDisabled">',
@@ -620,18 +639,19 @@
                 '</span>',
                 '<md-menu-content class="md-custom-menu-content" style="max-height: none!important; height: auto!important; padding: 0!important;">',
                 '    <span style="text-align: left; padding: 12px 20px 0 20px" disabled>{{ngModel.selectedTemplateName || placeholder}}</span>',
-                '    <md-date-range-picker show-template="true" first-day-of-week="firstDayOfWeek" ',
+                '    <md-date-range-picker first-day-of-week="firstDayOfWeek" ',
                 '     md-on-select="autoConfirm && ok()" ',
                 '     date-start="ngModel.dateStart" ',
                 '     date-end="ngModel.dateEnd" ',
-                '     show-template="ngModel.showTemplate" ',
                 '     selected-template="ngModel.selectedTemplate" ',
-                '     localization-map="ngModel.localizationMap" ',
-                '     custom-templates="ngModel.customTemplates" ',
-                '     disable-templates="{{ngModel.disableTemplates}}" ',
-                '     is-disabled-date="ngModel.isDisabledDate({ $date: $date })" ',
-                '     max-range="ngModel.maxRange" ',
-                '     one-panel="ngModel.onePanel" ',
+                '     show-template="showTemplate" ',
+                '     localization-map="localizationMap" ',
+                '     custom-templates="customTemplates" ',
+                '     disable-templates="{{disableTemplates}}" ',
+                '     is-disabled-date="isDisabledDate({ $date: $date })" ',
+                '     md-on-select="mdOnSelect({ $date: $date })" ',
+                '     max-range="maxRange" ',
+                '     one-panel="onePanel" ',
                 '     selected-template-name="ngModel.selectedTemplateName"></md-date-range-picker>',
                 '<p ng-if="!autoConfirm" layout="row" layout-align="end center">',
                 '<md-button ng-if="ngModel.showClear" class="md-raised" ng-click="clear()">{{getLocalizationVal("Clear")}}</md-button>',
@@ -662,15 +682,27 @@
         };
     }
 
-    mdDateRangePickerService.$inject = ['$q', '$mdDialog'];
-    function mdDateRangePickerService($q, $mdDialog) {
+    mdDateRangePickerService.$inject = ['$mdDialog'];
+    function mdDateRangePickerService($mdDialog) {
         var service = this;
 
         service.show = show;
+        serice.getSeletctedDate = getSeletctedDate;
+
+        /**
+         * @description returns all seleced date based on mmodel, filters and max range
+         * @param {*} model 
+         * @param {*} isDisabledDateCallback 
+         * @param {*} maxRange 
+         */
+        function getSeletctedDate(model, isDisabledDateCallback, maxRange){
+            var dates = [];
+            //TODO: Implement
+            // This might be overhead when date range selected is a full year
+        }
 
         function show(config) {
-            return $q(function (resolve, reject) {
-                $mdDialog.show({
+            return $mdDialog.show({
                     locals: {
                         mdDateRangePickerServiceModel: angular.copy(config.model)
                     },
@@ -683,7 +715,7 @@
                             $mdDialog.hide($scope.model);
                         }
                         $scope.cancel = function () {
-                            $mdDialog.hide(false);
+                            $mdDialog.cancel();
                         }
                         $scope.clear = function clear() {
                             $scope.model.selectedTemplateName = '';
@@ -735,13 +767,7 @@
                     targetEvent: config.targetEvent,
                     clickOutsideToClose: true,
                     fullscreen: config.model.fullscreen
-                })
-                    .then(function (result) {
-                        resolve(result);
-                    }, function () {
-                        reject(false);
-                    });
-            });
+                });
         }
     }
 
