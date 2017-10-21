@@ -687,7 +687,7 @@
         var service = this;
 
         service.show = show;
-        serice.getSeletctedDate = getSeletctedDate;
+        service.getSelectedDate = getSelectedDate;
 
         /**
          * @description returns all seleced date based on mmodel, filters and max range
@@ -695,7 +695,7 @@
          * @param {*} isDisabledDateCallback 
          * @param {*} maxRange 
          */
-        function getSeletctedDate(model, isDisabledDateCallback, maxRange){
+        function getSelectedDate(model, isDisabledDateCallback, maxRange){
             var dates = [];
             //TODO: Implement
             // This might be overhead when date range selected is a full year
