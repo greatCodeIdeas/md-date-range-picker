@@ -28,7 +28,7 @@ html
     <h2>Selected Date Range: {{selectedRange.dateStart | date}} - {{selectedRange.dateEnd | date}}</h2>
     <h2>Selected Date Template:{{selectedRange.selectedTemplateName}} - {{selectedRange.selectedTemplate}}</h2>
     <md-date-range-picker
-      md-on-select="onSelect()"
+      md-on-select="onSelect($dates)"
       date-start="selectedRange.dateStart"
       date-end="selectedRange.dateEnd"
       selected-template-name="selectedRange.selectedTemplateName"
@@ -38,6 +38,8 @@ html
       localization-map="mdLocalizationMap"
       custom-templates="mdCustomTemplates"
       disable-templates="TW,LW"
+      one-panel="false"
+      max-range="100"
       is-disabled-date="isFuture($date)"
     ></md-date-range-picker>
   </div>
