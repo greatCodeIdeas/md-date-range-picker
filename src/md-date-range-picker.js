@@ -719,10 +719,12 @@
         function show(config) {
             return $mdDialog.show({
                 locals: {
-                    mdDateRangePickerServiceModel: angular.copy(config.model)
+                    mdDateRangePickerServiceModel: angular.copy(config.model),
+                    mdDateRangePickerServiceConfig: angular.copy(config),
                 },
-                controller: ['$scope', 'mdDateRangePickerServiceModel', function ($scope, mdDateRangePickerServiceModel) {
+                controller: ['$scope', 'mdDateRangePickerServiceModel', 'mdDateRangePickerServiceConfig', function ($scope, mdDateRangePickerServiceModel, mdDateRangePickerServiceConfig) {
                     $scope.model = mdDateRangePickerServiceModel || {};
+                    $scope.config = mdDateRangePickerServiceConfig || {};
                     $scope.model.selectedTemplateName = $scope.model.selectedTemplateName || '';
                     $scope.ok = function () {
                         $scope.model.dateStart && $scope.model.dateStart.setHours(0, 0, 0, 0);
@@ -737,6 +739,14 @@
                         $scope.model.selectedTemplate = null;
                         $scope.model.dateStart = null;
                         $scope.model.dateEnd = null;
+                    }
+                    $scope.handleOnSelect = function ($dates) {
+                        if (typeof $scope.config.mdOnSelect === 'function') {
+                            $scope.config.mdOnSelect($dates);
+                        }
+                        if ($scope.config.autoConfirm) {
+                            $scope.ok();
+                        }
                     }
                     $scope.getLocalizationVal = function getLocalizationVal(val) {
                         var ret = null;
@@ -766,6 +776,7 @@
                     'localization-map="model.localizationMap" ',
                     'custom-templates="model.customTemplates" ',
                     'disable-templates="{{model.disableTemplates}}" ',
+                    'md-on-select="handleOnSelect($dates)" ',
                     'is-disabled-date="model.isDisabledDate({ $date: $date })" ',
                     'max-range="model.maxRange" ',
                     'one-panel="model.onePanel" ',
@@ -774,8 +785,8 @@
                     '</md-dialog-content>',
                     '<md-dialog-actions layout="row" layout-align="end center">',
                     '<md-button ng-click="cancel()">{{getLocalizationVal("Cancel")}}</md-button>',
-                    '<md-button class="md-raised" ng-click="clear()">{{getLocalizationVal("Clear")}}</md-button>',
-                    '<md-button class="md-raised md-primary" ng-click="ok()">{{getLocalizationVal("Ok")}}</md-button>',
+                    '<md-button ng-if="!config.autoConfirm" class="md-raised" ng-click="clear()">{{getLocalizationVal("Clear")}}</md-button>',
+                    '<md-button ng-if="!config.autoConfirm" class="md-raised md-primary" ng-click="ok()">{{getLocalizationVal("Ok")}}</md-button>',
                     '</md-dialog-actions>',
                     '</md-dialog>'].join(''),
                 parent: angular.element(document.body),
