@@ -31,6 +31,10 @@
         <p>Selected Dates</p>
         <span ng-if="page == 'selected-dates'">></span>
       </md-list-item>
+      <md-list-item ng-click="page = 'advanced'">
+        <p>Advanced</p>
+        <span ng-if="page == 'advanced'">></span>
+      </md-list-item>
     </md-list>
     <md-button class="md-primary md-raised" ng-click="clearAll()">Clear All</md-button>
   </div>
@@ -71,13 +75,15 @@
 
       $scope.calendarModel = { selectedTemplate: 'Last 3 Days' };
       $scope.pickerModel = { selectedTemplate: 'Last 3 Days' };
-      $scope.serviceModel = { selectedTemplate: 'Last 3 Days', customTemplates: $scope.customTemplates };
+      $scope.advancedModel = { selectedTemplate: 'Last 3 Days' };
+      $scope.serviceModel = { selectedTemplate: 'Last 3 Days' };
       $scope.selectedDate = {};
       $scope.selectedDates = [];
 
       $scope.selectDateRange = function () {
         $mdDateRangePicker.show({
           model: $scope.serviceModel,
+          customTemplates: $scope.customTemplates,
         }).then(function (result) {
           $scope.serviceModel = result;
         }).catch(function () {
@@ -90,6 +96,7 @@
           model: $scope.serviceModel,
           autoConfirm: true,
           mdOnSelect: console.log,
+          customTemplates: $scope.customTemplates,
         }).then(function (result) {
           $scope.serviceModel = result;
         }).catch(function () {
@@ -97,9 +104,30 @@
         });
       }
 
+      $scope.format = function (dateStart, dateEnd, template, templateName) {
+        return template ? 'Range of ' + (templateName || template) : (dateStart && dateEnd && (dateStart.toLocaleDateString() + ' to ' + dateEnd.toLocaleDateString()));
+      }
       $scope.isDisabledDate = function (d) {
         return d.getDay() === 0 || d.getDay() === 6;
       }
+
+      $scope.showAdvanced = function () {
+        $mdDateRangePicker.show({
+          model: $scope.advancedModel,
+          autoConfirm: true,
+          mdOnSelect: console.log,
+          showTemplate: true,
+          customTemplates: $scope.customTemplates,
+          onePanel: true,
+          format: $scope.format,
+          isDisabledDate: $scope.isDisabledDate,
+        }).then(function (result) {
+          $scope.serviceModel = result;
+        }).catch(function () {
+          console.log('Cancelled');
+        });
+      }
+
 
       $scope.clearAll = function () {
         $scope.calendarModel = { dateStart: null };

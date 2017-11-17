@@ -33,6 +33,7 @@
                 maxRange: '=?',
                 onePanel: '=?',
                 isDisabledDate: '&?',
+                format: '=?',
             },
             templateUrl: './md-date-range-picker.html',
             controller: 'mdDateRangePickerCtrl',
@@ -583,7 +584,10 @@
         }
 
         function selectedDateText() {
-            if (!$scope.dateStart || !$scope.dateEnd) {
+            console.log($scope.format);
+            if ($scope.format && typeof $scope.format === 'function') {
+                return $scope.format($scope.dateStart, $scope.dateEnd, $scope.selectedTemplate, $scope.selectedTemplateName);
+            } else if (!$scope.dateStart || !$scope.dateEnd) {
                 return '';
             } else if (!$scope.selectedTemplate) {
                 if (getDateDiff($scope.dateStart, $scope.dateEnd) === 0) {
@@ -634,6 +638,7 @@
                 disableTemplates: '@',
                 mdOnSelect: '&',
                 onePanel: '=?',
+                format: '=?',
                 maxRange: '=?',
                 firstDayOfWeek: '@'
             },
@@ -656,6 +661,7 @@
                 '     is-disabled-date="isDisabledDate({ $date: $date })" ',
                 '     max-range="maxRange" ',
                 '     one-panel="onePanel" ',
+                '     format="format" ',
                 '     selected-template-name="ngModel.selectedTemplateName"></md-date-range-picker>',
                 '<p ng-if="!autoConfirm" layout="row" layout-align="end center">',
                 '<md-button ng-if="ngModel.showClear" class="md-raised" ng-click="clear()">{{getLocalizationVal("Clear")}}</md-button>',
@@ -760,14 +766,14 @@
                         }
                         return ret;
                     }
-                    if ($scope.model.customTemplates)   console.warn('model.customTemplates will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({customTemplates}) instead');
-                    if ($scope.model.localizationMap)   console.warn('model.localizationMap will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({localizationMap}) instead');
-                    if ($scope.model.firstDayOfWeek)   console.warn('model.firstDayOfWeek will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({firstDayOfWeek}) instead');
-                    if ($scope.model.showTemplate)   console.warn('model.showTemplate will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({showTemplate}) instead');
-                    if ($scope.model.maxRange)   console.warn('model.maxRange will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({maxRange}) instead');
-                    if ($scope.model.onePanel)   console.warn('model.onePanel will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({onePanel}) instead');
-                    if ($scope.model.isDisabledDate)   console.warn('model.isDisabledDate({ $date: $date }) will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({isDisabledDate:($date)=>{}}) instead');
-                    
+                    if ($scope.model.customTemplates) console.warn('model.customTemplates will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({customTemplates}) instead');
+                    if ($scope.model.localizationMap) console.warn('model.localizationMap will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({localizationMap}) instead');
+                    if ($scope.model.firstDayOfWeek) console.warn('model.firstDayOfWeek will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({firstDayOfWeek}) instead');
+                    if ($scope.model.showTemplate) console.warn('model.showTemplate will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({showTemplate}) instead');
+                    if ($scope.model.maxRange) console.warn('model.maxRange will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({maxRange}) instead');
+                    if ($scope.model.onePanel) console.warn('model.onePanel will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({onePanel}) instead');
+                    if ($scope.model.isDisabledDate) console.warn('model.isDisabledDate({ $date: $date }) will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({isDisabledDate:($date)=>{}}) instead');
+
                 }],
                 template: ['<md-dialog aria-label="Date Range Picker">',
                     '<md-toolbar class="md-primary" layout="row" layout-align="start center">',
@@ -786,6 +792,7 @@
                     'first-day-of-week="config.firstDayOfWeek || model.firstDayOfWeek" ',
                     'localization-map="config.localizationMap || model.localizationMap" ',
                     'custom-templates="config.customTemplates || model.customTemplates" ',
+                    'format="config.format" ',
                     'disable-templates="{{model.disableTemplates}}" ',
                     'md-on-select="handleOnSelect($dates)" ',
                     'is-disabled-date="config.isDisabledDate ? config.isDisabledDate($date) : model.isDisabledDate({ $date: $date })" ',
