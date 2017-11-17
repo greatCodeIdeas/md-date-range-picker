@@ -75,6 +75,18 @@
         });
       }
 
+      $scope.selectDateRange = function () {
+        $mdDateRangePicker.show({
+          model: $scope.serviceModel,
+          autoConfirm: true,
+          mdOnSelect: console.log,
+        }).then(function (result) {
+          $scope.serviceModel = result;
+        }).catch(function () {
+          console.log('Cancelled');
+        });
+      }
+
       $scope.isDisabledDate = function(d) {
         return d.getDay() === 0 ||  d.getDay() === 6;
       }
