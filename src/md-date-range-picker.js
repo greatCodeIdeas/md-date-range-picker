@@ -93,7 +93,6 @@
                             scope.handleClickSelectLastYear();
                             scope.runIfNotInDigest(scope.triggerChange);
                             break;
-                        default:
                             break;
                     }
                 }
@@ -190,6 +189,17 @@
 
         function init() {
             var mctr = 0;
+            var currTmpl;
+
+            /** 
+             * add custom template to local custom template array 
+            */
+            if ($scope.customTemplates != null) {
+                for (var i = 0; i < $scope.customTemplates.length; i++) {
+                    currTmpl = $scope.customTemplates[i];
+                    SELECTION_TEMPLATES_CUSTOM[currTmpl.name] = currTmpl;
+                }
+            }
             if ($scope.selectedTemplate) {
                 switch ($scope.selectedTemplate) {
                     case 'TD':
@@ -217,7 +227,10 @@
                         $scope.handleClickSelectLastYear();
                         break;
                     default:
-                        $scope.selectedTemplate = '';
+                        if (SELECTION_TEMPLATES_CUSTOM && SELECTION_TEMPLATES_CUSTOM[$scope.selectedTemplate] && SELECTION_TEMPLATES_CUSTOM[$scope.selectedTemplate].dateStart && SELECTION_TEMPLATES_CUSTOM[$scope.selectedTemplate].dateEnd) {
+                            $scope.dateStart = SELECTION_TEMPLATES_CUSTOM[$scope.selectedTemplate].dateStart;
+                            $scope.dateEnd = SELECTION_TEMPLATES_CUSTOM[$scope.selectedTemplate].dateEnd;
+                        }
                         $scope.selectedTemplateName = $scope.selectedDateText();
                         break;
                 }
@@ -269,19 +282,9 @@
                 $scope.years.push({ id: yctr, name: getLocalizationVal(yctr) })
             }
 
-            /** 
-             * add custom template to local custom template array 
-            */
-            if ($scope.customTemplates != null) {
-                for (var i = 0; i < $scope.customTemplates.length; i++) {
-                    var currTmpl = $scope.customTemplates[i];
-                    SELECTION_TEMPLATES_CUSTOM[currTmpl.name] = currTmpl;
-                }
-            }
-
             /**
-         * get the templates to use 
-        */
+             * get the templates to use 
+            */
             for (var tmplKey in SELECTION_TEMPLATES) {
                 if (SELECTION_TEMPLATES.hasOwnProperty(tmplKey)) {
                     //check if we have disable templates property 
@@ -757,6 +760,14 @@
                         }
                         return ret;
                     }
+                    if ($scope.model.customTemplates)   console.warn('model.customTemplates will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({customTemplates}) instead');
+                    if ($scope.model.localizationMap)   console.warn('model.localizationMap will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({localizationMap}) instead');
+                    if ($scope.model.firstDayOfWeek)   console.warn('model.firstDayOfWeek will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({firstDayOfWeek}) instead');
+                    if ($scope.model.showTemplate)   console.warn('model.showTemplate will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({showTemplate}) instead');
+                    if ($scope.model.maxRange)   console.warn('model.maxRange will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({maxRange}) instead');
+                    if ($scope.model.onePanel)   console.warn('model.onePanel will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({onePanel}) instead');
+                    if ($scope.model.isDisabledDate)   console.warn('model.isDisabledDate({ $date: $date }) will be removed from model on next rlease, please use root config e.g. $mdDateRangePicker.show({isDisabledDate:($date)=>{}}) instead');
+                    
                 }],
                 template: ['<md-dialog aria-label="Date Range Picker">',
                     '<md-toolbar class="md-primary" layout="row" layout-align="start center">',
@@ -769,17 +780,17 @@
                     '<md-date-range-picker ',
                     'date-start="model.dateStart" ',
                     'date-end="model.dateEnd" ',
-                    'show-template="model.showTemplate" ',
+                    'show-template="config.showTemplate || model.showTemplate" ',
                     'selected-template="model.selectedTemplate" ',
                     'selected-template-name="model.selectedTemplateName" ',
-                    'first-day-of-week="firstDayOfWeek || model.firstDayOfWeek" ',
-                    'localization-map="model.localizationMap" ',
-                    'custom-templates="model.customTemplates" ',
+                    'first-day-of-week="config.firstDayOfWeek || model.firstDayOfWeek" ',
+                    'localization-map="config.localizationMap || model.localizationMap" ',
+                    'custom-templates="config.customTemplates || model.customTemplates" ',
                     'disable-templates="{{model.disableTemplates}}" ',
                     'md-on-select="handleOnSelect($dates)" ',
-                    'is-disabled-date="model.isDisabledDate({ $date: $date })" ',
-                    'max-range="model.maxRange" ',
-                    'one-panel="model.onePanel" ',
+                    'is-disabled-date="config.isDisabledDate ? config.isDisabledDate($date) : model.isDisabledDate({ $date: $date })" ',
+                    'max-range="config.maxRange || model.maxRange" ',
+                    'one-panel="config.onePanel || model.onePanel" ',
                     '>',
                     '</md-date-range-picker>',
                     '</md-dialog-content>',

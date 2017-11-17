@@ -59,9 +59,19 @@
     angular.module('demo.app', ['ngMaterial', 'ngMaterialDateRangePicker']).controller('ctrl', function ($scope, $mdDateRangePicker) {
       $scope.page = 'calendar';
 
-      $scope.calendarModel = { selectedTemplate: 'TW' };
-      $scope.pickerModel = { selectedTemplate: 'TW' };
-      $scope.serviceModel = {};
+      var lessThan3Day = new Date();
+      lessThan3Day.setDate(lessThan3Day.getDate() - 2);
+      $scope.customTemplates = [
+        {
+          name: 'Last 3 Days',
+          dateStart: lessThan3Day,
+          dateEnd: new Date(),
+        }
+      ];
+
+      $scope.calendarModel = { selectedTemplate: 'Last 3 Days' };
+      $scope.pickerModel = { selectedTemplate: 'Last 3 Days' };
+      $scope.serviceModel = { selectedTemplate: 'Last 3 Days', customTemplates: $scope.customTemplates };
       $scope.selectedDate = {};
       $scope.selectedDates = [];
 
@@ -87,8 +97,8 @@
         });
       }
 
-      $scope.isDisabledDate = function(d) {
-        return d.getDay() === 0 ||  d.getDay() === 6;
+      $scope.isDisabledDate = function (d) {
+        return d.getDay() === 0 || d.getDay() === 6;
       }
 
       $scope.clearAll = function () {
