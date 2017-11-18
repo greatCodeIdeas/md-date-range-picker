@@ -584,7 +584,6 @@
         }
 
         function selectedDateText() {
-            console.log($scope.format);
             if ($scope.format && typeof $scope.format === 'function') {
                 return $scope.format($scope.dateStart, $scope.dateEnd, $scope.selectedTemplate, $scope.selectedTemplateName);
             } else if (!$scope.dateStart || !$scope.dateEnd) {
