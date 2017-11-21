@@ -94,6 +94,7 @@
                             scope.handleClickSelectLastYear();
                             scope.runIfNotInDigest(scope.triggerChange);
                             break;
+                        default:
                             break;
                     }
                 }
