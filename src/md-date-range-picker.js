@@ -808,6 +808,7 @@
                     '</md-dialog-actions>',
                     '</md-dialog>'].join(''),
                 parent: angular.element(document.body),
+                multiple: config.multiple,
                 targetEvent: config.targetEvent,
                 clickOutsideToClose: true,
                 fullscreen: config.model.fullscreen
