@@ -1,7 +1,7 @@
 /*
 * Name: md-date-range-picker
-* Version: 0.7.2
-* Build Date: 11/18/2017
+* Version: 0.7.3
+* Build Date: 2017-12-6
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
 (function (window, angular) {
@@ -94,6 +94,7 @@
                             scope.handleClickSelectLastYear();
                             scope.runIfNotInDigest(scope.triggerChange);
                             break;
+                        default:
                             break;
                     }
                 }
@@ -807,6 +808,7 @@
                     '</md-dialog-actions>',
                     '</md-dialog>'].join(''),
                 parent: angular.element(document.body),
+                multiple: config.multiple,
                 targetEvent: config.targetEvent,
                 clickOutsideToClose: true,
                 fullscreen: config.model.fullscreen
