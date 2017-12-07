@@ -1,7 +1,7 @@
 /*
 * Name: md-date-range-picker
 * Version: 0.7.3
-* Build Date: 2017-12-6
+* Build Date: 2017-12-7
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
 (function (window, angular) {
@@ -394,8 +394,8 @@
 
         function inCurrentMonth(date, isSecondMonth) {
             return !isSecondMonth ?
-                date.getMonth() === $scope.activeMonth :
-                date.getMonth() === $scope.activeMonth2;
+                date.getMonth() === $scope.activeMonth && date.getFullYear() === $scope.activeYear :
+                date.getMonth() === $scope.activeMonth2 && date.getFullYear() === $scope.activeYear2;
         }
 
         function isInMaxRange(date) {
