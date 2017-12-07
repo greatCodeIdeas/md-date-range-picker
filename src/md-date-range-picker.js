@@ -394,8 +394,8 @@
 
         function inCurrentMonth(date, isSecondMonth) {
             return !isSecondMonth ?
-                date.getMonth() === $scope.activeMonth :
-                date.getMonth() === $scope.activeMonth2;
+                date.getMonth() === $scope.activeMonth && date.getFullYear() === $scope.activeYear :
+                date.getMonth() === $scope.activeMonth2 && date.getFullYear() === $scope.activeYear2;
         }
 
         function isInMaxRange(date) {
