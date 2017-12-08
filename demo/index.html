@@ -80,25 +80,13 @@
       $scope.selectedDate = {};
       $scope.selectedDates = [];
 
-      $scope.selectDateRange = function () {
+      $scope.selectDateRange = function (autoConfirm) {
         $mdDateRangePicker.show({
           model: $scope.serviceModel,
+          autoConfirm: autoConfirm,
           customTemplates: $scope.customTemplates,
         }).then(function (result) {
-          $scope.serviceModel = result;
-        }).catch(function () {
-          console.log('Cancelled');
-        });
-      }
-
-      $scope.selectDateRange = function () {
-        $mdDateRangePicker.show({
-          model: $scope.serviceModel,
-          autoConfirm: true,
-          mdOnSelect: console.log,
-          customTemplates: $scope.customTemplates,
-        }).then(function (result) {
-          $scope.serviceModel = result;
+          Object.assign($scope.serviceModel, result);
         }).catch(function () {
           console.log('Cancelled');
         });
@@ -111,18 +99,18 @@
         return d.getDay() === 0 || d.getDay() === 6;
       }
 
-      $scope.showAdvanced = function () {
+      $scope.showAdvanced = function ($event) {
         $mdDateRangePicker.show({
           model: $scope.advancedModel,
           autoConfirm: true,
-          mdOnSelect: console.log,
           showTemplate: true,
           customTemplates: $scope.customTemplates,
           onePanel: true,
+          targetEvent: $event,
           format: $scope.format,
           isDisabledDate: $scope.isDisabledDate,
         }).then(function (result) {
-          $scope.serviceModel = result;
+          Object.assign($scope.advancedModel, result);
         }).catch(function () {
           console.log('Cancelled');
         });

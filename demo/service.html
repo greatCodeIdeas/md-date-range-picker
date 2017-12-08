@@ -42,9 +42,10 @@
     <textarea readonly flex style="font-family: Lucida Console, Monaco, monospace">
 $scope.serviceModel = {};
 
-$scope.selectDateRange = function () {
+$scope.selectDateRange = function (autoConfirm) {
   $mdDateRangePicker.show({
     model: $scope.serviceModel,
+    autoConfirm: autoConfirm,
   }).then(function (result) {
     $scope.serviceModel = result;
   }).catch(function () {
