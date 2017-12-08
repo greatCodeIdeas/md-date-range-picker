@@ -1,7 +1,7 @@
 /*
 * Name: md-date-range-picker
 * Version: 0.7.3
-* Build Date: 2017-12-7
+* Build Date: 2017-12-8
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
 (function (window, angular) {
