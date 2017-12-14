@@ -80,10 +80,11 @@
       $scope.selectedDate = {};
       $scope.selectedDates = [];
 
-      $scope.selectDateRange = function (autoConfirm) {
+      $scope.selectDateRange = function ($event, autoConfirm) {
         $mdDateRangePicker.show({
           model: $scope.serviceModel,
           autoConfirm: autoConfirm,
+          targetEvent: $event,
           customTemplates: $scope.customTemplates,
         }).then(function (result) {
           Object.assign($scope.serviceModel, result);

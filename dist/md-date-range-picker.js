@@ -1,7 +1,7 @@
 /*
 * Name: md-date-range-picker
-* Version: 0.8.0
-* Build Date: 2017-12-8
+* Version: 0.8.1
+* Build Date: 2017-12-14
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
 (function (window, angular) {
@@ -268,11 +268,10 @@
             /**
              * Generate Month Names, Might depend on localization
             */
-            var m = new Date();
-            m.setDate(1);
+            var m = null;
             $scope.months = [];
             for (mctr = 0; mctr < 12; mctr++) {
-                m.setMonth(mctr);
+                m = new Date(2017, mctr, 1);
                 $scope.months.push({ id: mctr, name: getLocalizationVal($filter('date')(m, 'MMMM')) });
             }
             /**
