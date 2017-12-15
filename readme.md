@@ -1,4 +1,4 @@
-# md-date-range-picker
+# md-date-range-picker -  [![npm version](https://img.shields.io/npm/v/md-date-range-picker.svg?style=flat)](https://www.npmjs.com/package/md-date-range-picker) [![bower version](https://img.shields.io/bower/v/md-date-range-picker.svg?style=flat)](https://github.com/greatCodeIdeas/md-date-range-picker)
 
 A simple Angular Date range picker with material theme
 
