@@ -147,7 +147,7 @@
         $scope.numberOfMonthToDisplay = 2;
         $scope.today = new Date();
         $scope.dateStart && $scope.dateStart.setHours(0, 0, 0, 0);
-        $scope.dateEnd && $scope.dateStart.setHours(23, 59, 59, 999);
+        $scope.dateEnd && $scope.dateEnd.setHours(23, 59, 59, 999);
         $scope.firstDayOfMonth = $scope.dateStart ? new Date($scope.dateStart.getFullYear(), $scope.dateStart.getMonth(), 1) : Date($scope.today.getFullYear(), $scope.today.getMonth(), 1);
         $scope.lastDayOfMonth = $scope.dateStart ? new Date($scope.dateStart.getFullYear(), $scope.dateStart.getMonth() + 1, 0) : Date($scope.today.getFullYear(), $scope.today.getMonth() + 1, 0);
         $scope.activeDate = $scope.dateStart || $scope.today;
