@@ -1,7 +1,7 @@
 /*
 * Name: md-date-range-picker
-* Version: 0.8.1
-* Build Date: 2017-12-14
+* Version: 0.8.2
+* Build Date: 2018-3-2
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
 (function (window, angular) {
@@ -147,7 +147,7 @@
         $scope.numberOfMonthToDisplay = 2;
         $scope.today = new Date();
         $scope.dateStart && $scope.dateStart.setHours(0, 0, 0, 0);
-        $scope.dateEnd && $scope.dateStart.setHours(23, 59, 59, 999);
+        $scope.dateEnd && $scope.dateEnd.setHours(23, 59, 59, 999);
         $scope.firstDayOfMonth = $scope.dateStart ? new Date($scope.dateStart.getFullYear(), $scope.dateStart.getMonth(), 1) : Date($scope.today.getFullYear(), $scope.today.getMonth(), 1);
         $scope.lastDayOfMonth = $scope.dateStart ? new Date($scope.dateStart.getFullYear(), $scope.dateStart.getMonth() + 1, 0) : Date($scope.today.getFullYear(), $scope.today.getMonth() + 1, 0);
         $scope.activeDate = $scope.dateStart || $scope.today;
