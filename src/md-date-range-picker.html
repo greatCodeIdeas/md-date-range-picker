@@ -80,7 +80,7 @@
                     event-key="{{tmpltKey}}" ng-bind="::tmpltName" flex="20">
                 </div>
                 <div ng-repeat="tmplt in customTemplates" class="md-button" aria-label="{{::tmplt.name}}" ng-class="selectedTemplate === tmplt.name ? 'md-primary md-raised' : ''"
-                    ng-click="selectCustomRange(tmplt.name,tmplt)" ng-bind="::tmplt.name" flex="20">
+                    ng-click="selectCustomRange(tmplt.name,tmplt)" event-key="Custom Template" ng-bind="::tmplt.name" flex="20">
                 </div>
             </div>
 
