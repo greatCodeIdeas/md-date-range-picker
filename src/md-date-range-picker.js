@@ -94,6 +94,9 @@
                             scope.handleClickSelectLastYear();
                             scope.runIfNotInDigest(scope.triggerChange);
                             break;
+                        case 'Custom Template':
+                            scope.runIfNotInDigest(scope.triggerChange);
+                            break;
                         default:
                             break;
                     }
@@ -110,7 +113,7 @@
                 element.on('click', function (e) {
                     var eventKey = e.target.getAttribute('event-key'),
                         eventParam = e.target.getAttribute('event-param');
-                    scope.actionByKey(eventKey, eventParam, e);
+                        scope.actionByKey(eventKey, eventParam, e);
                 });
 
                 scope.triggerChange = function triggerChange(e) {
