@@ -407,6 +407,8 @@
             return ($scope.maxRange && Math.abs(Math.ceil(diff / (1000 * 3600 * 24))) + 1 <= $scope.maxRange || !$scope.maxRange);
         }
 
+        var startModified = true;
+
         function handleClickDate($event, date) {
             var changed = false;
             var shouldConfirm = false;
