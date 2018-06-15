@@ -1,7 +1,7 @@
 /*
 * Name: md-date-range-picker
 * Version: 0.8.3
-* Build Date: 2018-5-8
+* Build Date: 6/15/2018
 * Author: roel barreto <greatcodeideas@gmail.com>
 */
 (function (window, angular) {
@@ -407,6 +407,8 @@
             return ($scope.maxRange && Math.abs(Math.ceil(diff / (1000 * 3600 * 24))) + 1 <= $scope.maxRange || !$scope.maxRange);
         }
 
+        var startModified = true;
+
         function handleClickDate($event, date) {
             var changed = false;
             var shouldConfirm = false;
@@ -434,9 +436,31 @@
                 }
             } else {
                 if (!$scope.isDisabledDate || !$scope.isDisabledDate({ $date: date })) {
-                    $scope.dateStart = date;
-                    $scope.dateEnd = date;
-                    changed = true;
+                    if (!$scope.isDisabledDate || !$scope.isDisabledDate({ $date: date })) {
+
+                        if (moment(date).isBefore(moment($scope.dateStart), 'day')) {
+                            $scope.dateStart = date;
+                            startModified = true;
+
+                        } else if (moment(date).isAfter(moment($scope.dateEnd), 'day')) {
+                            $scope.dateEnd = date;
+                            startModified = false;
+
+                        } else if (moment(date).isBefore(moment($scope.dateEnd), 'day') && moment(date).isAfter(moment($scope.dateStart), 'day')) {
+                            if (!startModified) {
+                                $scope.dateStart = date;
+                                startModified = true;
+                            } else {
+                                $scope.dateEnd = date;
+                                startModified = false;
+                            }
+                        } else if (moment(date).isSame(moment($scope.dateEnd), 'day') || moment(date).isSame(moment($scope.dateStart), 'day')) {
+                            $scope.dateStart = date;
+                            $scope.dateEnd = date;
+                        }
+
+                        changed = true;
+                    }
                 }
             }
             if (changed) {
