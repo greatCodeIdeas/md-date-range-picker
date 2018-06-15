@@ -434,9 +434,31 @@
                 }
             } else {
                 if (!$scope.isDisabledDate || !$scope.isDisabledDate({ $date: date })) {
-                    $scope.dateStart = date;
-                    $scope.dateEnd = date;
-                    changed = true;
+                    if (!$scope.isDisabledDate || !$scope.isDisabledDate({ $date: date })) {
+
+                        if (moment(date).isBefore(moment($scope.dateStart), 'day')) {
+                            $scope.dateStart = date;
+                            startModified = true;
+
+                        } else if (moment(date).isAfter(moment($scope.dateEnd), 'day')) {
+                            $scope.dateEnd = date;
+                            startModified = false;
+
+                        } else if (moment(date).isBefore(moment($scope.dateEnd), 'day') && moment(date).isAfter(moment($scope.dateStart), 'day')) {
+                            if (!startModified) {
+                                $scope.dateStart = date;
+                                startModified = true;
+                            } else {
+                                $scope.dateEnd = date;
+                                startModified = false;
+                            }
+                        } else if (moment(date).isSame(moment($scope.dateEnd), 'day') || moment(date).isSame(moment($scope.dateStart), 'day')) {
+                            $scope.dateStart = date;
+                            $scope.dateEnd = date;
+                        }
+
+                        changed = true;
+                    }
                 }
             }
             if (changed) {
