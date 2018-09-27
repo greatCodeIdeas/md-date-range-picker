@@ -282,7 +282,7 @@
             */
             var y = $scope.activeYear, yctr = 0;
             $scope.years = [];
-            for (yctr = y - 10; yctr < y + 10; yctr++) {
+            for (yctr = y - 1; yctr < y + 10; yctr++) {
                 $scope.years.push({ id: yctr, name: getLocalizationVal(yctr) })
             }
 
