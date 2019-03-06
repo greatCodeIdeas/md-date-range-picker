@@ -2,19 +2,19 @@
     <div style="width: 300px">
       <div>
         <h2>Picker</h2>
-        <md-date-range ng-model="pickerModel" custom-templates="customTemplates"></md-date-range>
+        <md-date-range ng-model="pickerModel" custom-templates="customTemplates" first-day-of-week="firstDayOfWeek"></md-date-range>
       </div>
       <div>
         <h2>Auto Confirm</h2>
-        <md-date-range ng-model="pickerModel" auto-confirm="true" show-template="true" custom-templates="customTemplates"></md-date-range>
+        <md-date-range ng-model="pickerModel" auto-confirm="true" show-template="true" custom-templates="customTemplates" first-day-of-week="firstDayOfWeek"></md-date-range>
       </div>
       <div>
         <h2>One Panel</h2>
-        <md-date-range ng-model="pickerModel" one-panel="true" auto-confirm="true" show-template="false" custom-templates="customTemplates"></md-date-range>
+        <md-date-range ng-model="pickerModel" one-panel="true" auto-confirm="true" show-template="false" custom-templates="customTemplates" first-day-of-week="firstDayOfWeek"></md-date-range>
       </div>
       <div>
         <h2>One Panel with Templates</h2>
-        <md-date-range ng-model="pickerModel" one-panel="true" auto-confirm="true" show-template="true" custom-templates="customTemplates"></md-date-range>
+        <md-date-range ng-model="pickerModel" one-panel="true" auto-confirm="true" show-template="true" custom-templates="customTemplates" first-day-of-week="firstDayOfWeek"></md-date-range>
       </div>
     </div>
     <div layout="column" style="width: 380px">
@@ -43,20 +43,21 @@
           </tr>
           <tr>
             <td>firstDayOfWeek</td>
-            <td>1 Default</td>
+            <td>0 Sunday</td>
           </tr>
         </table>
-      </code> 
+      </code>
     </div>
     <div layout="column" flex>
-    <h2>Html</h2>
-    <textarea readonly flex style="font-family: Lucida Console, Monaco, monospace">
-<md-date-range
-  ng-model="pickerModel"
-  auto-confirm="true"
-  show-template="false"
-  one-panel="true">
-</md-date-range>
-    </textarea>
-  </div>
+      <h2>Html</h2>
+      <textarea readonly flex style="font-family: Lucida Console, Monaco, monospace">
+        <md-date-range
+          ng-model="pickerModel"
+          auto-confirm="true"
+          show-template="false"
+          one-panel="true"
+          first-day-of-week="firstDayOfWeek">
+        </md-date-range>
+      </textarea>
+    </div>
   </div>

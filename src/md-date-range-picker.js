@@ -324,7 +324,7 @@
         }
 
         function getFirstDayOfWeek() {
-            if ([undefined, null, '', NaN].indexOf($scope.firstDayOfWeek) !== -1) {
+            if ([undefined, null, '', NaN].indexOf($scope.firstDayOfWeek) !== -1 || [0, 1, 2, 3, 4, 5, 6].indexOf($scope.firstDayOfWeek) === -1) {
                 return START_OF_WEEK;
             }
             return $scope.firstDayOfWeek;
@@ -642,7 +642,7 @@
                 onePanel: '=?',
                 format: '=?',
                 maxRange: '=?',
-                firstDayOfWeek: '@'
+                firstDayOfWeek: '=?'
             },
             template: ['<md-menu ng-disabled="ngDisabled">',
                 '<span class="md-select-value" ng-click="!ngDisabled && (($mdMenu && $mdMenu.open) ? $mdMenu.open($event) : $mdOpenMenu($event))">',
