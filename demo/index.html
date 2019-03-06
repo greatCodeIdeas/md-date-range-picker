@@ -79,6 +79,7 @@
       $scope.serviceModel = { selectedTemplate: 'Last 3 Days' };
       $scope.selectedDate = {};
       $scope.selectedDates = [];
+      $scope.firstDayOfWeek = 0;
 
       $scope.selectDateRange = function ($event, autoConfirm) {
         $mdDateRangePicker.show({
