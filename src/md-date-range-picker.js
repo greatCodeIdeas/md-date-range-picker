@@ -34,6 +34,7 @@
                 onePanel: '=?',
                 isDisabledDate: '&?',
                 format: '=?',
+                autoFocusDateStart: '=?'
             },
             templateUrl: './md-date-range-picker.html',
             controller: 'mdDateRangePickerCtrl',
@@ -252,7 +253,7 @@
                 }
             });
             $scope.$watch('dateStart', function (next, prev) {
-                if (next !== prev && $scope.dateStart && !$scope.inCurrentMonth($scope.dateStart) && !$scope.inCurrentMonth($scope.dateStart, true)) {
+                if (next !== prev && $scope.dateStart && $scope.autoFocusDateStart !== false && !$scope.inCurrentMonth($scope.dateStart) && !$scope.inCurrentMonth($scope.dateStart, true)) {
                     $scope.focusToDate($scope.dateStart);
                 }
             });
