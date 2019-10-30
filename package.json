@@ -19,7 +19,7 @@
   "author": "Roel Barreto <greatcodeideas@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "clean-css": "3.4.19",
+    "clean-css": "4.1.11",
     "express": "^4.16.4",
     "fs": "0.0.1-security",
     "html-minifier": "3.0.3",
