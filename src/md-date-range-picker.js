@@ -482,17 +482,18 @@
             var d = new Date(), d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
             $scope.dateStart = d1;
-            $scope.dateEnd = d1;
+            $scope.dateEnd = d;
             $scope.selectedTemplate = 'TD';
             $scope.selectedTemplateName = $scope.selectedDateText();
             //$scope.focusToDate(d);
         }
 
         function handleClickSelectYesterday() {
-            var d = new Date(), d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - 1);
+            var d = new Date(), d1 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - 1), 
+            d2 = new Date(d.getFullYear(), d.getMonth(), d.getDate() - 1);
 
             $scope.dateStart = d1;
-            $scope.dateEnd = d1;
+            $scope.dateEnd = d2;
             $scope.selectedTemplate = 'YD';
             $scope.selectedTemplateName = $scope.selectedDateText();
             //$scope.focusToDate(d);
